@@ -35,10 +35,10 @@ import java.util.EnumSet;
 
 import javax.swing.SwingUtilities;
 
-import org.omg.CORBA._PolicyStub;
-
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 
+// TODO: How does KeyListener get involved?
+// Example: If Ctrl+Button1 begins the drag, if Ctrl is released, does the drag end?  It should.
 public class PJDialogMouseDragHelper
 implements MouseListener, MouseMotionListener {
     
@@ -219,6 +219,7 @@ implements MouseListener, MouseMotionListener {
     }
     
     protected void mouseDraggedCore(MouseEvent e) {
+        // TODO: Does this get called multiple times (unnecessarily)?
         if (CursorChangeTrigger.MOUSE_DRAG == _cursorChangeTrigger) {
             Component optTarget = getCursorChangeTarget();
             setMoveCursor(optTarget);

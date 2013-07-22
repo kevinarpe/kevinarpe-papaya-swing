@@ -57,6 +57,8 @@ public final class PSwingDebug {
     }
     
     public static Logger getLogger(Class<?> klass) {
+        ObjectArgs.checkNotNull(klass, "klass");
+        
         Logger logger = NOPLogger.NOP_LOGGER;;
         if (isEnabled(klass)) {
             logger = LoggerFactory.getLogger(klass);
