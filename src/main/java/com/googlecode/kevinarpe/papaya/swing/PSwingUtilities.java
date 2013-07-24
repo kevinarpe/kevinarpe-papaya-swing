@@ -33,12 +33,44 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.AbstractButton;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 
+/**
+ * Collection of static methods that builds upon {@link SwingUtilities}.
+ * <p>
+ * Note about argument types: Where possible the <b>least</b> derived class is used for method
+ * arguments.  For widgets, this is frequently one of:
+ * <ul>
+ *   <li>{@link java.awt.Component}: from Abstract Window Toolkit (base class of most AWT/Swing
+ *   widgets)</li>
+ *   <li>{@link java.awt.Container}: also from Abstract Window Toolkit (derived from
+ *   {@code Component})</li>
+ *   <li>{@link javax.swing.JComponent}: from Swing toolkiet (derived from {@code Container})</li>
+ * </ul>
+ * 
+ * @author Kevin Connor ARPE (kevinarpe@gmail.com)
+ */
 public final class PSwingUtilities {
 
+    /**
+     * Tests if a {@link Component} is showing, which is defined by three sub-tests:
+     * <ol>
+     *   <li>showing via {@link Component#isShowing()}</li>
+     *   <li>has a parent window via {@link SwingUtilities#getWindowAncestor(Component)}</li>
+     *   <li>the parent window is showing via {@link Component#isShowing()}</li>
+     * </ol>
+     * 
+     * @param comp
+     *        reference to an AWT/Swing widget
+     * 
+     * @return {@code true} if widget is showing
+     * 
+     * @throws NullPointerException
+     *         if {@code comp} is {@code null}
+     */
     public static boolean isComponentShowing(Component comp) {
         ObjectArgs.checkNotNull(comp, "comp");
         
@@ -52,6 +84,8 @@ public final class PSwingUtilities {
     }
     
     public static void buttonDoClickAfterNextShow(final AbstractButton button) {
+        ObjectArgs.checkNotNull(button, "button");
+        
         runAfterNextShow(button, new Runnable() {
             @Override
             public void run() {
@@ -61,6 +95,8 @@ public final class PSwingUtilities {
     }
     
     public static void requestFocusAfterNextShow(final Component comp) {
+        ObjectArgs.checkNotNull(comp, "comp");
+        
         runAfterNextShow(comp, new Runnable() {
             @Override
             public void run() {
@@ -70,6 +106,8 @@ public final class PSwingUtilities {
     }
     
     public static void buttonDoClickAsync(final AbstractButton button) {
+        ObjectArgs.checkNotNull(button, "button");
+        
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -78,7 +116,41 @@ public final class PSwingUtilities {
         });
     }
     
+    /**
+     * Runs a callback only after the next show event.  One or two listeners are installed (and
+     * later uninstalled) to correctly capture the show event.  (This is trickier than many
+     * realize!)  The intent of this method is to provide a safe way to modify a {@link Component}
+     * after its next show.  Example: The original {@link JSplitPane} did not allow proportional
+     * divider location to be correctly set until the widget was shown.  What a pain!  (Grrr.)
+     * <p>
+     * Some caveats:
+     * <ul>
+     *   <li>The callback is <b>always</b> run from the
+     *   <a href="http://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html">
+     *   Event Dispatch Thread</a>.</li>
+     *   <li>To better understand the term "showing", see
+     *   {@link #isComponentShowing(Component)}.</li>
+     *   <li>The term "next" is applied strictly: If the component is showing when this method is
+     *   called, the code will not run until the widget is hidden, then shown again.  The method
+     *   {@link #runIfShowingOrAfterNextShow(Component, Runnable)} exists to handle this
+     *   issue.</li>
+     * </ul>
+     * 
+     * @param comp
+     *        reference to an AWT/Swing widget
+     * @param run
+     *        callback to run
+     * 
+     * @throws NullPointerException
+     *         if {@code comp} or {@code run} is {@code null}
+     * 
+     * @see #isComponentShowing(Component)
+     * @see #runIfShowingOrAfterNextShow(Component, Runnable)
+     */
     public static void runAfterNextShow(final Component comp, final Runnable run) {
+        ObjectArgs.checkNotNull(comp, "comp");
+        ObjectArgs.checkNotNull(run, "run");
+        
         HierarchyListener hierListener = new HierarchyListener() {
             @Override
             public void hierarchyChanged(HierarchyEvent e) {
@@ -152,5 +224,48 @@ public final class PSwingUtilities {
         };
         
         return winListener;
+    }
+    
+    /**
+     * Given a callback:
+     * <ul>
+     *   <li>if widget is showing, run via {@link SwingUtilities#invokeLater(Runnable)}</li>
+     *   <li>else, run via {@link #runAfterNextShow(Component, Runnable)}</li>
+     * </ul>
+     * <p>
+     * Some caveats:
+     * <ul>
+     *   <li>The callback is <b>always</b> run from the
+     *   <a href="http://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html">
+     *   Event Dispatch Thread</a>.</li>
+     *   <li>To better understand the term "showing", see
+     *   {@link #isComponentShowing(Component)}.</li>
+     * </ul>
+     * 
+     * @param comp
+     *        reference to an AWT/Swing widget
+     * @param run
+     *        callback to run
+     * 
+     * @return {@code true} is widget is showing
+     * 
+     * @throws NullPointerException
+     *         if {@code comp} or {@code run} is {@code null}
+     * 
+     * @see #isComponentShowing(Component)
+     * @see #runAfterNextShow(Component, Runnable)
+     */
+    public static boolean runIfShowingOrAfterNextShow(Component comp, Runnable run) {
+        ObjectArgs.checkNotNull(comp, "comp");
+        ObjectArgs.checkNotNull(run, "run");
+        
+        if (isComponentShowing(comp)) {
+            SwingUtilities.invokeLater(run);
+            return true;
+        }
+        else {
+            runAfterNextShow(comp, run);
+            return false;
+        }
     }
 }

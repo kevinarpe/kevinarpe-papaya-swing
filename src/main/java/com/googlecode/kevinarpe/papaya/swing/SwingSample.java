@@ -30,6 +30,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -74,8 +76,17 @@ public class SwingSample {
         splitPane.setDividerLocation(0.33);
         parentPanel.add(splitPane, BorderLayout.CENTER);
         
+        JTextField textField = new JTextField("This is a test.");
+        parentPanel.add(textField, BorderLayout.PAGE_END);
+        PSwingUtilities.requestFocusAfterNextShow(textField);
+        
         parentPanel.setOpaque(true); //content panes must be opaque
         frame.setContentPane(parentPanel);
+        
+//        System.out.println(KeyStroke.getKeyStroke('A').getKeyCode());
+//        System.out.println(KeyStroke.getKeyStroke("A").getKeyCode());
+//        System.out.println(KeyStroke.getKeyStroke("Ä").getKeyCode());
+//        System.exit(0);
 
         frame.pack();
         frame.setSize(800, 600);

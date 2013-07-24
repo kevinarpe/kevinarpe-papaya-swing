@@ -65,12 +65,12 @@ implements MouseListener, MouseMotionListener {
 
     public PJDialogMouseDragHelper(
             Component comp,
-            EnumSet<InputEventModifier> modifierSet,
+            EnumSet<PInputEventModifier> modifierSet,
             CursorChangeTrigger cursorChangeTrigger,
             CursorChangeTarget cursorChangeTarget) {
         _comp = ObjectArgs.checkNotNull(comp, "comp");
-        _modifierBits = InputEventModifier.bitwiseOr(modifierSet);
-        if (0 == (_modifierBits & InputEventModifier.BUTTON_MASK_BITS)) {
+        _modifierBits = PInputEventModifier.bitwiseOr(modifierSet);
+        if (0 == (_modifierBits & PInputEventModifier.BUTTON_MASK_BITS)) {
             throw new IllegalArgumentException(
                 "Argument 'modifierSet': Missing at least one button down mask");
         }
@@ -126,7 +126,7 @@ implements MouseListener, MouseMotionListener {
             // This line is carefully crafted following the documentation of getModifiersEx().
             // Since new modifiers may be introduced in the future, this line of code is relatively
             // future-proof as it is written.
-            if (_modifierBits == (InputEventModifier.ALL_MASK_BITS & modifierBits)) {
+            if (_modifierBits == (PInputEventModifier.ALL_MASK_BITS & modifierBits)) {
                 Component optTarget = getCursorChangeTarget();
                 _cursorBeforeMousePressed = (null == optTarget ? null : optTarget.getCursor());
                 _pointMousePressed = e.getPoint();
@@ -179,7 +179,7 @@ implements MouseListener, MouseMotionListener {
         Object source = e.getSource();
         if (_comp == source) {
             int modifierBits = e.getModifiersEx();
-            int buttonBits = _modifierBits & InputEventModifier.BUTTON_MASK_BITS;
+            int buttonBits = _modifierBits & PInputEventModifier.BUTTON_MASK_BITS;
             // Again, this line is very carefully coded.  At this moment, we only care if at least
             // mouse button (from _modifierBits) has been released.
             if (buttonBits != (buttonBits & modifierBits)) {
