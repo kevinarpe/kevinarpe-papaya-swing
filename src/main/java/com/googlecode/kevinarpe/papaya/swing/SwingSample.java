@@ -26,12 +26,13 @@ package com.googlecode.kevinarpe.papaya.swing;
  */
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -63,7 +64,12 @@ public class SwingSample {
         BorderLayout parentLayout = new BorderLayout(10, 10);
         parentPanel.setLayout(parentLayout);
         
-        JButton button1 = new JButton("Left");
+//        JButton button1 = new JButton("Left");
+        //LÅBEL
+//        JButton button1 = new JButton("LÅBEL");
+        JButton button1 = new JButton("Låbel");
+        button1.setMnemonic(KeyEvent.VK_A);
+        button1.setDisplayedMnemonicIndex(1);
         JButton button2 = new JButton("Right");
         
         PSwingDebug.setEnabled(PJSplitPaneProportional.class, true);
