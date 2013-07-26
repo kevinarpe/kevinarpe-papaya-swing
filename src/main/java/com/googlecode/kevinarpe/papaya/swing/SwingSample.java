@@ -67,9 +67,12 @@ public class SwingSample {
 //        JButton button1 = new JButton("Left");
         //LÅBEL
 //        JButton button1 = new JButton("LÅBEL");
-        JButton button1 = new JButton("Låbel");
+//        JButton button1 = new JButton("Låbel");
+//        button1.setMnemonic(KeyEvent.VK_A);
+//        button1.setDisplayedMnemonicIndex(1);
+        JButton button1 = new JButton("<html><b>L</b>åbel");
         button1.setMnemonic(KeyEvent.VK_A);
-        button1.setDisplayedMnemonicIndex(1);
+        button1.setDisplayedMnemonicIndex(13);
         JButton button2 = new JButton("Right");
         
         PSwingDebug.setEnabled(PJSplitPaneProportional.class, true);

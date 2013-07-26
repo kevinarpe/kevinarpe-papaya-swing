@@ -63,8 +63,8 @@ public final class PKeyStrokeUtils {
      * {@link Character#toUpperCase(char)}.  Additionally, on many systems, Latin chars with
      * diacritical marks, e.g., {@code 'Å'} or {@code 'Ã'}, will not work.
      * <p>
-     * To programatically find virtual key codes for widget keyboard mnemonics from their text
-     * labels, e.g., {@code "&Sample"}, see {@link PMnemonicHelper}.  This class also includes
+     * To programatically find virtual key codes for widget keyboard mnemonics from their text,
+     * e.g., {@code "&Sample"}, see {@link PJComponentTextParser}.  This class also includes
      * support for Unicode decomposition to support Latin chars with diacritical marks.
      * 
      * @param keyChar
@@ -87,7 +87,7 @@ public final class PKeyStrokeUtils {
      * 
      * @see KeyStroke#getKeyStroke(String)
      * @see KeyEvent
-     * @see PMnemonicHelper
+     * @see PJComponentTextParser
      */
     @FullyTested
     public static int getKeyCode(char keyChar) {
