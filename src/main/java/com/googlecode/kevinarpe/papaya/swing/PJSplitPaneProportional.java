@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import com.googlecode.kevinarpe.papaya.argument.DoubleArgs;
 
 /**
- * Extension of {@link JSplitPane} to only use proportional divider location.  Additionally,
+ * Extension of {@link JSplitPane} to only use proportions for the divider location.  Additionally,
  * when the component is <b>not</b> showing (immediately following construction), setting the
  * divider location via {@link #setDividerLocation(double)} is correctly applied after the
  * component is shown next.  Normally, the standard JDK class, {@code JSplitPane} does not
@@ -187,14 +187,14 @@ extends JSplitPane {
      */
     @Override
     public void setDividerLocation(final double proportionalLocation) {
-        if (PSwingUtilities.isComponentShowing(this)) {
+        if (PSwingUtils.isComponentShowing(this)) {
             setDividerLocationCore(proportionalLocation);
         }
         else {
             _debugLogger.debug(
                 "setDividerLocation: Component is not showing: Queue request via runAfterNextShow: {}",
                 this);
-            PSwingUtilities.runAfterNextShow(this, new Runnable() {
+            PSwingUtils.runAfterNextShow(this, new Runnable() {
                 @Override
                 public void run() {
                     _debugLogger.debug("runAfterNextShow:BEGIN");

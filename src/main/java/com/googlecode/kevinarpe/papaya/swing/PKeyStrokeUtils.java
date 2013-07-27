@@ -15,6 +15,10 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
  * @see KeyStroke
  */
 public final class PKeyStrokeUtils {
+
+    // Disable default constructor
+    private PKeyStrokeUtils() {
+    }
     
     // scratch
     public static void main(String[] argArr) {

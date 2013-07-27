@@ -53,7 +53,7 @@ import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  */
-public final class PSwingUtilities {
+public final class PSwingUtils {
 
     /**
      * Tests if a {@link Component} is showing, which is defined by three sub-tests:

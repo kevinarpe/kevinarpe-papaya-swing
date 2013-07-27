@@ -87,7 +87,7 @@ public class SwingSample {
         
         JTextField textField = new JTextField("This is a test.");
         parentPanel.add(textField, BorderLayout.PAGE_END);
-        PSwingUtilities.requestFocusAfterNextShow(textField);
+        PSwingUtils.requestFocusAfterNextShow(textField);
         
         parentPanel.setOpaque(true); //content panes must be opaque
         frame.setContentPane(parentPanel);

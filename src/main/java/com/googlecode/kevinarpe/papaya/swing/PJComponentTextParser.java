@@ -6,6 +6,7 @@ import java.text.Normalizer;
 import javax.swing.AbstractButton;
 import javax.swing.plaf.basic.BasicHTML;
 
+import com.google.common.base.Objects;
 import com.googlecode.kevinarpe.papaya.StringUtils;
 import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 
@@ -28,7 +29,7 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
  * of escaped markers ({@code "&&"}).
  * <p>
  * When necessary, Latin characters that use diacritical marks, such as the letter å, are handled
- * correctly through Unicode decomposition.  Example: Å -> A & ̊
+ * correctly through Unicode decomposition.  Example: å -> a & ̊
  * <p>
  * Example: {@code "Save &As..."}
  * <ul>
@@ -186,16 +187,19 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
  * @see #mnemonicIndex
  */
 @FullyTested
-public class PJComponentTextParser {
+public final class PJComponentTextParser {
+    
+    // TODO: Override hashCode, equals, toString
+    // TODO: Test them.
     
     /**
      * The character used to mark a mnemonic, e.g., {@code "&Sample"} to mark {@code S}.
      */
     public static final char MARKER = '&';
     
-    static final char DEFAULT_MNEMONIC_KEY_CHAR = 0;
-    static final int DEFAULT_MNEMONIC_KEY_CODE = 0;
-    static final int DEFAULT_MNEMONIC_INDEX = -1;
+    public static final char DEFAULT_MNEMONIC_KEY_CHAR = 0;
+    public static final int DEFAULT_MNEMONIC_KEY_CODE = 0;
+    public static final int DEFAULT_MNEMONIC_INDEX = -1;
     
     /**
      * Original text label to the constructor {@link #PMnemonicHelper(String)}.  This text may
@@ -440,5 +444,65 @@ public class PJComponentTextParser {
             }
         }
         return keyCode;
+    }
+
+    @Override
+    public int hashCode() {
+        int x =
+            Objects.hashCode(
+                textBeforeParse,
+                isHTMLStringBeforeParse,
+                textAfterParse,
+                isHTMLStringAfterParse,
+                hasMnemonic,
+                mnemonicKeyChar,
+                mnemonicKeyCode,
+                mnemonicIndex);
+        return x;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // Ref: http://stackoverflow.com/a/5039178/257299
+        boolean result = (this == obj);
+        if (!result && obj instanceof PJComponentTextParser) {
+            final PJComponentTextParser other = (PJComponentTextParser) obj;
+            result =
+                this.isHTMLStringBeforeParse == other.isHTMLStringBeforeParse
+                && this.isHTMLStringAfterParse == other.isHTMLStringAfterParse
+                && this.hasMnemonic == other.hasMnemonic
+                && this.mnemonicKeyChar == other.mnemonicKeyChar
+                && this.mnemonicKeyCode == other.mnemonicKeyCode
+                && this.mnemonicIndex == other.mnemonicIndex
+                && Objects.equal(this.textBeforeParse, other.textBeforeParse)
+                && Objects.equal(this.textAfterParse, other.textAfterParse)
+                ;
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        String x = String.format(
+            "%s: ["
+            + "%n\ttextBeforeParse: '%s'"
+            + "%n\tisHTMLStringBeforeParse: %s"
+            + "%n\ttextAfterParse: '%s'"
+            + "%n\thasMnemonic: %s"
+            + "%n\tmnemonicKeyChar: %c (\\u%04x)"
+            + "%n\tmnemonicKeyCode: %d"
+            + "%n\tmnemonicIndex: %d"
+            + "%n\t]",
+            PJComponentTextParser.class.getCanonicalName(),
+            textBeforeParse,
+            isHTMLStringBeforeParse,
+            textAfterParse,
+            isHTMLStringAfterParse,
+            hasMnemonic,
+            mnemonicKeyChar,
+            (int) mnemonicKeyChar,
+            mnemonicKeyCode,
+            mnemonicIndex);
+        return x;
     }
 }
