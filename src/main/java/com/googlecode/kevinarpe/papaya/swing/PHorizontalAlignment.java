@@ -5,21 +5,21 @@ import java.util.Map;
 import javax.swing.SwingConstants;
 
 import com.google.common.collect.ImmutableMap;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.swing.widget.PJLabel;
 
 /**
  * Constants used for widget horizontal alignment.  Unlike {@link SwingConstants}, which only holds
  * integer values, this enum restricts the range of permissible values.  Used judiciously, it may
- * help to reduce runtime errors.
+ * help to reduce runtime errors and increase source code readability.
  * <p>
- * Example methods:
+ * Example constructors and methods:
  * <ul>
+ *   <li>{@link PJLabel#PJLabel(String, PHorizontalAlignment)}</li>
  *   <li>{@link PJLabel#setHorizontalAlignment(PHorizontalAlignment)}</li>
  *   <li>{@link PJLabel#setHorizontalTextPosition(PHorizontalAlignment)}</li>
  *   <li>{@link PJLabel#getHorizontalAlignmentAsEnum()}</li>
  *   <li>{@link PJLabel#getHorizontalTextPositionAsEnum()}</li>
- *   <li></li>
- *   <li></li>
  * </ul>
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
@@ -27,13 +27,34 @@ import com.googlecode.kevinarpe.papaya.swing.widget.PJLabel;
  * @see SwingConstants
  * @see #value
  * @see #valueOf(int)
+ * @see PVerticalAlignment
  */
+@FullyTested
 public enum PHorizontalAlignment {
 
+    /**
+     * @see SwingConstants#LEFT
+     */
     LEFT(SwingConstants.LEFT),
+
+    /**
+     * @see SwingConstants#CENTER
+     */
     CENTER(SwingConstants.CENTER),
+
+    /**
+     * @see SwingConstants#RIGHT
+     */
     RIGHT(SwingConstants.RIGHT),
+
+    /**
+     * @see SwingConstants#LEADING
+     */
     LEADING(SwingConstants.LEADING),
+
+    /**
+     * @see SwingConstants#TRAILING
+     */
     TRAILING(SwingConstants.TRAILING),
     ;
     
@@ -41,10 +62,6 @@ public enum PHorizontalAlignment {
 //        System.out.println(PHorizontalAlignment.LEADING);
 //    }
     
-    /**
-     * Immutable map between {@link #value} and the corresponding enum ref, e.g.,
-     * {@link #LEFT} -> {@link SwingConstants#LEFT}.
-     */
     private static final Map<Integer, PHorizontalAlignment> _INT_VALUE_TO_ENUM_VALUE_MAP;
     
     static {

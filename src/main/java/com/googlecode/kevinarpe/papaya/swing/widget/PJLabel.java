@@ -1,9 +1,13 @@
 package com.googlecode.kevinarpe.papaya.swing.widget;
 
+import java.awt.Component;
+import java.awt.Graphics;
+
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.swing.PHorizontalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.PJComponentTextParser;
@@ -11,10 +15,27 @@ import com.googlecode.kevinarpe.papaya.swing.PVerticalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.demo.PJLabelDemo;
 
 /**
- * Extension of {@link JLabel}.  In particular, the method {@link #setText(String)}, which is
- * called by any constructor that accepts a {@link String} parameter, incorporates the class
- * {@link PJComponentTextParser} to enrich the text feature of {@code JLabel}.
+ * Extension of {@link JLabel}.
  * <p>
+ * <b>Label Text with Mnemonic Markers</b>
+ * <p>
+ * Many other GUI toolkits support mnemonic markers embedded in text to set keyboard shortcuts,
+ * e.g., {@code "&Sample"} sets letter S as the keyboard shortcut character.  The method
+ * {@link #setText(String)} incorporates the class {@link PJComponentTextParser} to enrich the text
+ * label feature of {@code JLabel}.  It is also called by any constructor that accepts a
+ * {@link String} parameter.
+ * <p>
+ * <b>{@link SwingConstants} vs. Enums</b>
+ * <p>
+ * As an alternative to the integer constants from interface {@link SwingConstants}, e.g.,
+ * {@link SwingConstants#RIGHT}, two enums are used: {@link PHorizontalAlignment} and
+ * {@link PVerticalAlignment}.  Parallel versions of existing constructors and methods exist for
+ * these enums, such as:
+ * <ul>
+ *   <li>{@link #PJLabel(String, PHorizontalAlignment)}</li>
+ *   <li>{@link #setHorizontalAlignment(PHorizontalAlignment)}</li>
+ *   <li>{@link #getHorizontalAlignmentAsEnum()}</li>
+ * </ul>
  * For a simple demo using this widget, see {@link PJLabelDemo}.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
@@ -22,16 +43,124 @@ import com.googlecode.kevinarpe.papaya.swing.demo.PJLabelDemo;
  * @see JLabel
  * @see #setText(String)
  */
+@FullyTested
 @SuppressWarnings("serial")
 public class PJLabel
 extends JLabel {
     
-    public static final String DEFAULT_TEXT = "";
+    /**
+     * Stores defaults for {@link PJLabel}.
+     * <p>
+     * All instances of this class are fully immutable, thus thread-safe, and safe to store as
+     * {@code static final} constants.
+     * 
+     * @author Kevin Connor ARPE (kevinarpe@gmail.com)
+     *
+     * @see PJLabel#DEFAULTS
+     * @see PJLabel#DEFAULTS_FOR_ICON_ONLY
+     */
+    public static final class PJLabelDefaults {
+        
+        /**
+         * Default value for {@link PJLabel#getText()}.
+         */
+        public final String text;
+        
+        /**
+         * Default value for {@link PJLabel#getDisplayedMnemonic()}.
+         */
+        public final int displayedMnemonicKeyCode;
+        
+        /**
+         * Default value for {@link PJLabel#getDisplayedMnemonicIndex()}.
+         */
+        public final int displayedMnemonicIndex;
+        
+        /**
+         * Default value for {@link PJLabel#getIcon()}.
+         */
+        public final Icon icon;
+        
+        /**
+         * Default value for {@link PJLabel#getHorizontalAlignmentAsEnum()}.
+         */
+        public final PHorizontalAlignment horizontalAlignment;
+        
+        /**
+         * Default value for {@link PJLabel#getVerticalAlignmentAsEnum()}.
+         */
+        public final PVerticalAlignment verticalAlignment;
+        
+        /**
+         * Default value for {@link PJLabel#getHorizontalTextPositionAsEnum()}.
+         */
+        public final PHorizontalAlignment horizontalTextPosition;
+        
+        /**
+         * Default value for {@link PJLabel#getVerticalTextPositionAsEnum()}.
+         */
+        public final PVerticalAlignment verticalTextPosition;
+        
+        private PJLabelDefaults(JLabel x) {
+            ObjectArgs.checkNotNull(x, "x");
+            
+            this.text = x.getText();
+            this.displayedMnemonicKeyCode = x.getDisplayedMnemonic();
+            this.displayedMnemonicIndex = x.getDisplayedMnemonicIndex();
+            this.icon = x.getIcon();
+            
+            this.horizontalAlignment =
+                PHorizontalAlignment.valueOf(x.getHorizontalAlignment());
+            
+            this.verticalAlignment =
+                PVerticalAlignment.valueOf(x.getVerticalAlignment());
+            
+            this.horizontalTextPosition =
+                PHorizontalAlignment.valueOf(x.getHorizontalTextPosition());
+            
+            this.verticalTextPosition =
+                PVerticalAlignment.valueOf(x.getVerticalTextPosition());
+        }
+    }
     
-    public static final int DEFAULT_MNEMONIC_KEY_CODE =
-        PJComponentTextParser.DEFAULT_MNEMONIC_KEY_CODE;
+    /**
+     * Defaults for {@link PJLabel} when the constructor uses a {@link String} and optionally an
+     * {@link Icon}.
+     */
+    public static final PJLabelDefaults DEFAULTS;
     
-    public static final int DEFAULT_MNEMONIC_INDEX = PJComponentTextParser.DEFAULT_MNEMONIC_INDEX;
+    /**
+     * Defaults for {@link PJLabel} when the constructor uses an {@link Icon}, but does not use a
+     * {@link String}.
+     */
+    public static final PJLabelDefaults DEFAULTS_FOR_ICON_ONLY;
+    
+    static {
+        JLabel x = new JLabel();
+        DEFAULTS = new PJLabelDefaults(x);
+        
+        JLabel y = new JLabel(new Icon() {
+            @Override
+            public void paintIcon(Component c, Graphics g, int x, int y) {
+                // empty
+            }
+
+            @Override
+            public int getIconWidth() {
+                return 17;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return 31;
+            }
+        });
+        
+        DEFAULTS_FOR_ICON_ONLY = new PJLabelDefaults(y);
+        
+        @SuppressWarnings("unused")
+        int dummy = 1;  // debug breakpoint
+    }
     
     private String _originalText;
 
@@ -40,15 +169,7 @@ extends JLabel {
      */
     public PJLabel() {
         super();
-        _PJLabel_init(DEFAULT_TEXT);
-    }
-
-    /**
-     * @see JLabel#JLabel(Icon, int)
-     */
-    public PJLabel(Icon image, int horizontalAlignment) {
-        super(image, horizontalAlignment);
-        _PJLabel_init(DEFAULT_TEXT);
+        _PJLabel_init(DEFAULTS.text);
     }
 
     /**
@@ -56,25 +177,25 @@ extends JLabel {
      */
     public PJLabel(Icon image) {
         super(image);
-        _PJLabel_init(DEFAULT_TEXT);
+        _PJLabel_init(DEFAULTS_FOR_ICON_ONLY.text);
     }
 
     /**
-     * @see JLabel#JLabel(String, Icon, int)
-     * @see #setText(String)
+     * It is better to use {@link #PJLabel(Icon, PHorizontalAlignment)}.
      */
-    public PJLabel(String text, Icon icon, int horizontalAlignment) {
-        super(text, icon, horizontalAlignment);
-        _PJLabel_init(text);
+    public PJLabel(Icon image, int horizontalAlignment) {
+        super(image, horizontalAlignment);
+        _PJLabel_init(DEFAULTS_FOR_ICON_ONLY.text);
     }
 
     /**
-     * @see JLabel#JLabel(String, int)
-     * @see #setText(String)
+     * @see JLabel#JLabel(Icon, int)
      */
-    public PJLabel(String text, int horizontalAlignment) {
-        super(text, horizontalAlignment);
-        _PJLabel_init(text);
+    public PJLabel(Icon image, PHorizontalAlignment horizontalAlignment) {
+        super(
+            image,
+            ObjectArgs.checkNotNull(horizontalAlignment, "horizontalAlignment").value);
+        _PJLabel_init(DEFAULTS_FOR_ICON_ONLY.text);
     }
 
     /**
@@ -83,6 +204,45 @@ extends JLabel {
      */
     public PJLabel(String text) {
         super(text);
+        _PJLabel_init(text);
+    }
+
+    /**
+     * It is better to use {@link #PJLabel(String, PHorizontalAlignment)}.
+     */
+    public PJLabel(String text, int horizontalAlignment) {
+        super(text, horizontalAlignment);
+        _PJLabel_init(text);
+    }
+
+    /**
+     * @see JLabel#JLabel(String, int)
+     * @see #setText(String)
+     */
+    public PJLabel(String text, PHorizontalAlignment horizontalAlignment) {
+        super(
+            text,
+            ObjectArgs.checkNotNull(horizontalAlignment, "horizontalAlignment").value);
+        _PJLabel_init(text);
+    }
+
+    /**
+     * It is better to use {@link #PJLabel(String, Icon, PHorizontalAlignment)}.
+     */
+    public PJLabel(String text, Icon icon, int horizontalAlignment) {
+        super(text, icon, horizontalAlignment);
+        _PJLabel_init(text);
+    }
+
+    /**
+     * @see JLabel#JLabel(String, Icon, int)
+     * @see #setText(String)
+     */
+    public PJLabel(String text, Icon icon, PHorizontalAlignment horizontalAlignment) {
+        super(
+            text,
+            icon,
+            ObjectArgs.checkNotNull(horizontalAlignment, "horizontalAlignment").value);
         _PJLabel_init(text);
     }
     
@@ -97,8 +257,6 @@ extends JLabel {
      * <p>
      * Methods {@link #setDisplayedMnemonic(int)} and {@link #setDisplayedMnemonicIndex(int)} are
      * also called by this method.
-     * <p>
-     * A {@code null String} is treated as an empty string, {@code ""}.
      * <hr>
      * Docs from {@link JLabel#setText(String)}:
      * <p>
@@ -207,7 +365,7 @@ extends JLabel {
      * @see #setVerticalAlignment(int)
      * @see #getVerticalAlignment()
      */
-    public void setVertialAlignment(PVerticalAlignment valign) {
+    public void setVerticalAlignment(PVerticalAlignment valign) {
         ObjectArgs.checkNotNull(valign, "valign");
         
         setVerticalAlignment(valign.value);
@@ -283,7 +441,7 @@ extends JLabel {
      * @see #setVerticalTextPosition(int)
      * @see #getVerticalTextPosition()
      */
-    public void setVertialTextPosition(PVerticalAlignment valign) {
+    public void setVerticalTextPosition(PVerticalAlignment valign) {
         ObjectArgs.checkNotNull(valign, "valign");
         
         setVerticalTextPosition(valign.value);

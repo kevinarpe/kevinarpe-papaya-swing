@@ -1,4 +1,4 @@
-package com.googlecode.kevinarpe.papaya.swing;
+package com.googlecode.kevinarpe.papaya.swing.widget;
 
 /*
  * #%L
@@ -34,6 +34,8 @@ import javax.swing.JSplitPane;
 
 import org.slf4j.Logger;
 import com.googlecode.kevinarpe.papaya.argument.DoubleArgs;
+import com.googlecode.kevinarpe.papaya.swing.PSwingDebug;
+import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
 
 /**
  * Extension of {@link JSplitPane} to only use proportions for the divider location.  Additionally,

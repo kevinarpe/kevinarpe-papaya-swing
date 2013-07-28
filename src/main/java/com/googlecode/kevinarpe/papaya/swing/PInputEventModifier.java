@@ -38,6 +38,17 @@ import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 /**
  * Key and mouse button modifiers used for input events.  This enumeration was created with a few
  * helper methods to clarify the masks provided in the interface {@link InputEvent}.
+ * <p>
+ * Certain, obsolete values are intentionally missing from this enum:
+ * <ul>
+ *   <li>{@link InputEvent#SHIFT_MASK}</li>
+ *   <li>{@link InputEvent#CTRL_MASK}</li>
+ *   <li>{@link InputEvent#META_MASK}</li>
+ *   <li>{@link InputEvent#ALT_MASK}</li>
+ *   <li>{@link InputEvent#ALT_GRAPH_MASK}</li>
+ * </ul>
+ * All of these values are replaced by their "down" relatives, e.g.,
+ * {@link InputEvent#SHIFT_DOWN_MASK}.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  * 
@@ -66,8 +77,16 @@ public enum PInputEventModifier {
     /**
      * Represents the Meta key pressed down.
      * <p>
-     * Learn more about this key here: <a href="http://en.wikipedia.org/wiki/Meta_key">
-     * http://en.wikipedia.org/wiki/Meta_key</a>
+     * Learn more about this key here:
+     * <ul>
+     *   <li><a href="http://en.wikipedia.org/wiki/Meta_key"
+     *   >http://en.wikipedia.org/wiki/Meta_key</a></li>
+     *   <li><a href="http://en.wikipedia.org/wiki/Command_key"
+     *   >http://en.wikipedia.org/wiki/Command_key</a></li>
+     * </ul>
+     * On the Apple OS X platform, this value corresponds to the Command key.
+     * (<a href="https://developer.apple.com/library/mac/#documentation/Java/Conceptual/Java14Development/07-NativePlatformIntegration/NativePlatformIntegration.html#//apple_ref/doc/uid/TP40001909-212032"
+     * >Reference</a>)
      * 
      * @see ModifierType#KEY
      * @see InputEvent#META_DOWN_MASK
@@ -77,6 +96,12 @@ public enum PInputEventModifier {
     
     /**
      * Represents the Alt key pressed down.
+     * <p>
+     * On the Apple OS X platform, this value corresponds to the Option key.
+     * (<a href="https://developer.apple.com/library/mac/#documentation/Java/Conceptual/Java14Development/07-NativePlatformIntegration/NativePlatformIntegration.html#//apple_ref/doc/uid/TP40001909-212032"
+     * >Reference</a>)
+     * Learn more about this key here: <a href="http://en.wikipedia.org/wiki/Option_key"
+     * >http://en.wikipedia.org/wiki/Option_key</a>
      * 
      * @see ModifierType#KEY
      * @see InputEvent#ALT_DOWN_MASK
@@ -189,25 +214,28 @@ public enum PInputEventModifier {
      */
     public static final int BUTTON_MASK_BITS;
     
-    private static final Map<Integer, PInputEventModifier> _BITS_TO_ENUM_VALUE_MAP;
+    private static final Map<Integer, PInputEventModifier> _MASK_BITS_TO_ENUM_VALUE_MAP;
     private static final Map<Integer, PInputEventModifier> _KEY_CODE_TO_ENUM_VALUE_MAP;
     
     static {
         int allBits = 0;
         int keyBits = 0;
         int buttonBits = 0;
-        ImmutableMap.Builder<Integer, PInputEventModifier> bitsMapBuilder = ImmutableMap.builder();
+        
+        ImmutableMap.Builder<Integer, PInputEventModifier> maskBitsMapBuilder =
+            ImmutableMap.builder();
         ImmutableMap.Builder<Integer, PInputEventModifier> keyCodeMapBuilder =
             ImmutableMap.builder();
+        
         for (PInputEventModifier mod: values()) {
-            allBits |= mod.bits;
+            allBits |= mod.maskBits;
             if (mod.modifierType == ModifierType.KEY) {
-                keyBits |= mod.bits;
+                keyBits |= mod.maskBits;
             }
             else if (mod.modifierType == ModifierType.KEY) {
-                buttonBits |= mod.bits;
+                buttonBits |= mod.maskBits;
             }
-            bitsMapBuilder.put(mod.bits, mod);
+            maskBitsMapBuilder.put(mod.maskBits, mod);
             if (0 != mod.keyCode) {
                 keyCodeMapBuilder.put(mod.keyCode, mod);
             }
@@ -215,7 +243,7 @@ public enum PInputEventModifier {
         ALL_MASK_BITS = allBits;
         KEY_MASK_BITS = keyBits;
         BUTTON_MASK_BITS = buttonBits;
-        _BITS_TO_ENUM_VALUE_MAP = bitsMapBuilder.build();
+        _MASK_BITS_TO_ENUM_VALUE_MAP = maskBitsMapBuilder.build();
         _KEY_CODE_TO_ENUM_VALUE_MAP = keyCodeMapBuilder.build();
     }
     
@@ -226,20 +254,20 @@ public enum PInputEventModifier {
      * @param value
      *        integer constant from {@link InputEvent}, e.g., {@link InputEvent#ALT_DOWN_MASK}
      * 
-     * @return enum value ref where {@link #bits} equals the parameter, {@code bits}
+     * @return enum value ref where {@link #maskBits} equals the parameter, {@code maskBits}
      * 
      * @throws IllegalArgumentException
-     *         if {@code value} does not match field {@link #bits} for any enum value
+     *         if {@code maskBits} does not match field {@link #maskBits} for any enum value
      * 
-     * @see #bits
+     * @see #maskBits
      * @see #valueOf(String)
      */
-    public static PInputEventModifier valueOfBits(int bits) {
-        PInputEventModifier x = _BITS_TO_ENUM_VALUE_MAP.get(bits);
+    public static PInputEventModifier valueOfMaskBits(int maskBits) {
+        PInputEventModifier x = _MASK_BITS_TO_ENUM_VALUE_MAP.get(maskBits);
         if (null == x) {
             throw new IllegalArgumentException(String.format(
-                "Failed to find %s for bits %d (0x%04x)",
-                PInputEventModifier.class.getSimpleName(), bits, bits));
+                "Failed to find %s for mask bits %d (0x%08x)",
+                PInputEventModifier.class.getSimpleName(), maskBits, maskBits));
         }
         return x;
     }
@@ -255,7 +283,7 @@ public enum PInputEventModifier {
      * @return enum value ref where {@link #keyCode} equals the parameter, {@code keyCode}
      * 
      * @throws IllegalArgumentException
-     *         if {@code value} does not match field {@link #keyCode} for any enum value
+     *         if {@code keyCode} does not match field {@link #keyCode} for any enum value
      * 
      * @see #keyCode
      * @see #valueOf(String)
@@ -278,9 +306,9 @@ public enum PInputEventModifier {
     /**
      * Bits from interface {@link InputEvent}
      * 
-     * @see #valueOfBits(int)
+     * @see #valueOfMaskBits(int)
      */
-    public final int bits;
+    public final int maskBits;
     
     /**
      * Virtual key code from interface {@link KeyEvent}.  This field is zero when
@@ -290,9 +318,9 @@ public enum PInputEventModifier {
      */
     public final int keyCode;
     
-    private PInputEventModifier(ModifierType modifierType, int bits, int keyCode) {
+    private PInputEventModifier(ModifierType modifierType, int maskBits, int keyCode) {
         this.modifierType = ObjectArgs.checkNotNull(modifierType, "modifierType");
-        this.bits = bits;
+        this.maskBits = maskBits;
         this.keyCode = keyCode;
     }
     
@@ -310,11 +338,11 @@ public enum PInputEventModifier {
     public final static int bitwiseOr(EnumSet<PInputEventModifier> set) {
         ObjectArgs.checkNotNull(set, "set");
         
-        int bits = 0;
+        int maskBits = 0;
         for (PInputEventModifier mod: set) {
-            bits |= mod.bits;
+            maskBits |= mod.maskBits;
         }
-        return bits;
+        return maskBits;
     }
     
     /**
@@ -332,14 +360,14 @@ public enum PInputEventModifier {
             "enum %s: ["
             + "%n\tname(): '%s'"
             + "%n\tmodifierType: %s"
-            + "%n\tbits: %s / 0x%08x / %d (%s.%s)"
+            + "%n\tmaskBits: %s / 0x%08x / %d (%s.%s)"
             + "%n\t]",
             PInputEventModifier.class.getCanonicalName(),
             name(),
             modifierType,
-            Integer.toBinaryString(bits),
-            bits,
-            bits,
+            Integer.toBinaryString(maskBits),
+            maskBits,
+            maskBits,
             InputEvent.class.getSimpleName(),
             name());
         return x;

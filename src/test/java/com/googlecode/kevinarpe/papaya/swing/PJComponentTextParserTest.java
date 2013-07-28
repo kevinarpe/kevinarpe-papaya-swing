@@ -6,7 +6,13 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.google.common.testing.EqualsTester;
+
 public class PJComponentTextParserTest {
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PJComponentTextParser.ctor(String)
+    //
     
     @DataProvider
     private static final Object[][] _ctor_Pass_Data() {
@@ -75,26 +81,6 @@ public class PJComponentTextParserTest {
                     "Label",  // labelBeforeParse
                     false,  // isHTMLStringBeforeParse
                     "Label",  // labelAfterParse
-                    false,  // isHTMLStringAfterParse
-                    false,  // hasMnemonic
-                    PJComponentTextParser.DEFAULT_MNEMONIC_KEY_CHAR,  // mnemonicKeyChar
-                    PJComponentTextParser.DEFAULT_MNEMONIC_KEY_CODE,  // mnemonicKeyCode
-                    PJComponentTextParser.DEFAULT_MNEMONIC_INDEX,  // mnemonicIndex
-                },
-                {
-                    "",  // labelBeforeParse
-                    false,  // isHTMLStringBeforeParse
-                    "",  // labelAfterParse
-                    false,  // isHTMLStringAfterParse
-                    false,  // hasMnemonic
-                    PJComponentTextParser.DEFAULT_MNEMONIC_KEY_CHAR,  // mnemonicKeyChar
-                    PJComponentTextParser.DEFAULT_MNEMONIC_KEY_CODE,  // mnemonicKeyCode
-                    PJComponentTextParser.DEFAULT_MNEMONIC_INDEX,  // mnemonicIndex
-                },
-                {
-                    "   ",  // labelBeforeParse
-                    false,  // isHTMLStringBeforeParse
-                    "   ",  // labelAfterParse
                     false,  // isHTMLStringAfterParse
                     false,  // hasMnemonic
                     PJComponentTextParser.DEFAULT_MNEMONIC_KEY_CHAR,  // mnemonicKeyChar
@@ -311,5 +297,42 @@ public class PJComponentTextParserTest {
 //            e.printStackTrace();
             throw e;
         }
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PJComponentTextParser.hashCode()/.equals(Object)
+    //
+
+    @Test
+    public void hashCodeAndEquals_Pass() {
+        Object[][] argArrArr = _ctor_Pass_Data();
+        EqualsTester eq = new EqualsTester();
+        for (Object[] argArr: argArrArr) {
+            String labelBeforeParse = (String) argArr[0];
+            PJComponentTextParser x = new PJComponentTextParser(labelBeforeParse);
+            PJComponentTextParser y = new PJComponentTextParser(labelBeforeParse);
+            eq.addEqualityGroup(x, y);
+        }
+        eq.testEquals();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PJComponentTextParser.toString()
+    //
+    
+    @Test(dataProvider = "_ctor_Pass_Data")
+    public void toString_Pass(
+            String labelBeforeParse,
+            boolean isHTMLStringBeforeParse,
+            String labelAfterParse,
+            boolean isHTMLStringAfterParse,
+            boolean hasMnemonic,
+            char mnemonicKeyChar,
+            int mnemonicKeyCode,
+            int mnemonicIndex) {
+        PJComponentTextParser x = new PJComponentTextParser(labelBeforeParse);
+        String y = x.toString();
+        Assert.assertTrue(null != y);
+        Assert.assertTrue(!y.isEmpty());
     }
 }

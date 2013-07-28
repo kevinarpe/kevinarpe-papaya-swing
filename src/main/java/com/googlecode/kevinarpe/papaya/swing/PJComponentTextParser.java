@@ -9,6 +9,7 @@ import javax.swing.plaf.basic.BasicHTML;
 import com.google.common.base.Objects;
 import com.googlecode.kevinarpe.papaya.StringUtils;
 import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
+import com.googlecode.kevinarpe.papaya.swing.widget.PJLabel;
 
 /**
  * Parses widget text labels for optional mnemonics, e.g., {@code "Save &As..."}.  This class
@@ -172,6 +173,8 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
  *   <li>instead, use {@link PJComponentTextParser#mnemonicKeyCode} with
  *   {@link AbstractButton#setMnemonic(int)}</li>
  * </ul>
+ * All instances of this class are fully immutable, thus thread-safe, and safe to store as
+ * {@code static final} constants.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  * 
@@ -189,17 +192,26 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 @FullyTested
 public final class PJComponentTextParser {
     
-    // TODO: Override hashCode, equals, toString
-    // TODO: Test them.
-    
     /**
      * The character used to mark a mnemonic, e.g., {@code "&Sample"} to mark {@code S}.
      */
     public static final char MARKER = '&';
     
-    public static final char DEFAULT_MNEMONIC_KEY_CHAR = 0;
-    public static final int DEFAULT_MNEMONIC_KEY_CODE = 0;
-    public static final int DEFAULT_MNEMONIC_INDEX = -1;
+    /**
+     * Default for field {@link #mnemonicKeyChar}.
+     */
+    public static final char DEFAULT_MNEMONIC_KEY_CHAR =
+        (char) PJLabel.DEFAULTS.displayedMnemonicKeyCode;
+    
+    /**
+     * Default for field {@link #mnemonicKeyCode}.
+     */
+    public static final int DEFAULT_MNEMONIC_KEY_CODE = PJLabel.DEFAULTS.displayedMnemonicKeyCode;
+    
+    /**
+     * Default for field {@link #mnemonicIndex}.
+     */
+    public static final int DEFAULT_MNEMONIC_INDEX = PJLabel.DEFAULTS.displayedMnemonicIndex;
     
     /**
      * Original text label to the constructor {@link #PMnemonicHelper(String)}.  This text may
@@ -243,7 +255,8 @@ public final class PJComponentTextParser {
      * The Unicode character marked as the mnemonic character, e.g., {@code "&Sample"} marks
      * {@code S}.
      * <p>
-     * If {@link #hasMnemonic} is {@code false}, this field has value zero.
+     * If {@link #hasMnemonic} is {@code false}, this field has value
+     * {@link #DEFAULT_MNEMONIC_KEY_CHAR}.
      * <p>
      * When setting the mnemonic for a button:
      * <ul>
@@ -255,6 +268,7 @@ public final class PJComponentTextParser {
      * 
      * @see #hasMnemonic
      * @see #mnemonicKeyCode
+     * @see #DEFAULT_MNEMONIC_KEY_CHAR
      */
     public final char mnemonicKeyChar;
     
@@ -262,7 +276,8 @@ public final class PJComponentTextParser {
      * The (case-insensitive) virtual key code for the marked mnemonic character, e.g.,
      * {@code "&Sample"} or {@code "&sample"} -> {@link KeyEvent#VK_S}.
      * <p>
-     * If {@link #hasMnemonic} is {@code false}, this field has value zero.
+     * If {@link #hasMnemonic} is {@code false}, this field has value
+     * {@link #DEFAULT_MNEMONIC_KEY_CODE}.
      * <p>
      * When setting the mnemonic for a button:
      * <ul>
@@ -274,6 +289,7 @@ public final class PJComponentTextParser {
      * 
      * @see #mnemonicKeyChar
      * @see #mnemonicIndex
+     * @see #DEFAULT_MNEMONIC_KEY_CODE
      */
     public final int mnemonicKeyCode;
     
@@ -281,11 +297,13 @@ public final class PJComponentTextParser {
      * The index in {@link #textAfterParse} for {@link #mnemonicKeyChar}, e.g.,
      * {@code "Sample && &Example"} -> {@code "Sample & Example"} -> index of {@code 'E'} -> 9.
      * <p>
-     * If {@link #hasMnemonic} is {@code false}, this field has value {@code -1} (negative one).
+     * If {@link #hasMnemonic} is {@code false}, this field has value
+     * {@link #DEFAULT_MNEMONIC_INDEX}.
      * <p>
      * This value may be used with {@link AbstractButton#setDisplayedMnemonicIndex(int)}.
      * 
      * @see #mnemonicKeyCode
+     * @see #DEFAULT_MNEMONIC_INDEX
      */
     public final int mnemonicIndex;
 
@@ -427,7 +445,8 @@ public final class PJComponentTextParser {
         // You are now entering The Insane Unicode Zone.
         // On many platforms, if the keyChar uses a diacritic, such as Å or å, the virtual
         // key code cannot be found.  Instead, try to decompose the character to its Latin
-        // letter and diacritic.  Example: Å -> A & ̊ 
+        // letter and diacritic.  Example: å -> a & ̊ 
+        // Ref: http://stackoverflow.com/q/17859114/257299
         String decomp = Normalizer.normalize(String.valueOf(keyChar), Normalizer.Form.NFD);
         int decompLen = decomp.length();
         if (2 == decompLen) {
@@ -488,6 +507,7 @@ public final class PJComponentTextParser {
             + "%n\ttextBeforeParse: '%s'"
             + "%n\tisHTMLStringBeforeParse: %s"
             + "%n\ttextAfterParse: '%s'"
+            + "%n\tisHTMLStringAfterParse: %s"
             + "%n\thasMnemonic: %s"
             + "%n\tmnemonicKeyChar: %c (\\u%04x)"
             + "%n\tmnemonicKeyCode: %d"

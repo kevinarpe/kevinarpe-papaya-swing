@@ -36,6 +36,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import com.googlecode.kevinarpe.papaya.swing.widget.PJSplitPaneProportional;
+
 public class SwingSample {
 
     public static final void main(String[] argArr)
