@@ -251,7 +251,7 @@ public enum PInputEventModifier {
      * Converts an integer constant from {@link InputEvent}, e.g.,
      * {@link InputEvent#ALT_DOWN_MASK}, to the corresponding enum value ref.
      * 
-     * @param value
+     * @param maskBits
      *        integer constant from {@link InputEvent}, e.g., {@link InputEvent#ALT_DOWN_MASK}
      * 
      * @return enum value ref where {@link #maskBits} equals the parameter, {@code maskBits}
@@ -277,7 +277,7 @@ public enum PInputEventModifier {
      * corresponding enum value ref.  This method only works for enum values where field
      * {@link #modifierType} is {@link ModifierType#KEY}.
      * 
-     * @param value
+     * @param keyCode
      *        integer constant from {@link KeyEvent}, e.g., {@link KeyEvent#VK_ALT}
      * 
      * @return enum value ref where {@link #keyCode} equals the parameter, {@code keyCode}
