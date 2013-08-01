@@ -24,3 +24,6 @@ test-output/
 
 # Generated Test Data
 src/test/resources/generated/
+
+# Junky Stuff
+ignore/

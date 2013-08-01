@@ -31,9 +31,12 @@ import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JSplitPane;
-
 import org.slf4j.Logger;
+
+import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
 import com.googlecode.kevinarpe.papaya.argument.DoubleArgs;
+import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
+import com.googlecode.kevinarpe.papaya.swing.PJSplitPaneOrientation;
 import com.googlecode.kevinarpe.papaya.swing.PSwingDebug;
 import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
 
@@ -48,10 +51,11 @@ import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
  *
  * @see JSplitPane
  */
+@NotFullyTested
 @SuppressWarnings("serial")
 public class PJSplitPaneProportional
 extends JSplitPane {
-
+    
     /**
      * @see JSplitPane#JSplitPane()
      */
@@ -61,7 +65,7 @@ extends JSplitPane {
     }
 
     /**
-     * @see JSplitPane#JSplitPane(int)
+     * It is better to use {@link #PJSplitPaneProportional(PJSplitPaneOrientation)}.
      */
     public PJSplitPaneProportional(int newOrientation) {
         super(newOrientation);
@@ -69,7 +73,15 @@ extends JSplitPane {
     }
 
     /**
-     * @see JSplitPane#JSplitPane(int, boolean)
+     * @see JSplitPane#JSplitPane(int)
+     */
+    public PJSplitPaneProportional(PJSplitPaneOrientation newOrientation) {
+        super(ObjectArgs.checkNotNull(newOrientation, "newOrientation").value);
+        PJSplitPaneInit();
+    }
+
+    /**
+     * It is better to use {@link #PJSplitPaneProportional(PJSplitPaneOrientation, boolean)}.
      */
     public PJSplitPaneProportional(int newOrientation, boolean newContinuousLayout) {
         super(newOrientation, newContinuousLayout);
@@ -77,7 +89,19 @@ extends JSplitPane {
     }
 
     /**
-     * @see JSplitPane#JSplitPane(int, Component, Component)
+     * @see JSplitPane#JSplitPane(int, boolean)
+     */
+    public PJSplitPaneProportional(
+            PJSplitPaneOrientation newOrientation, boolean newContinuousLayout) {
+        super(
+            ObjectArgs.checkNotNull(newOrientation, "newOrientation").value,
+            newContinuousLayout);
+        PJSplitPaneInit();
+    }
+
+    /**
+     * It is better to use
+     * {@link #PJSplitPaneProportional(PJSplitPaneOrientation, Component, Component)}.
      */
     public PJSplitPaneProportional(
             int newOrientation,
@@ -88,7 +112,22 @@ extends JSplitPane {
     }
 
     /**
-     * @see JSplitPane#JSplitPane(int, boolean, Component, Component)
+     * @see JSplitPane#JSplitPane(int, Component, Component)
+     */
+    public PJSplitPaneProportional(
+            PJSplitPaneOrientation newOrientation,
+            Component newLeftComponent,
+            Component newRightComponent) {
+        super(
+            ObjectArgs.checkNotNull(newOrientation, "newOrientation").value,
+            newLeftComponent,
+            newRightComponent);
+        PJSplitPaneInit();
+    }
+
+    /**
+     * It is better to use
+     * {@link #PJSplitPaneProportional(PJSplitPaneOrientation, boolean, Component, Component)}.
      */
     public PJSplitPaneProportional(
             int newOrientation,
@@ -96,6 +135,22 @@ extends JSplitPane {
             Component newLeftComponent,
             Component newRightComponent) {
         super(newOrientation, newContinuousLayout, newLeftComponent, newRightComponent);
+        PJSplitPaneInit();
+    }
+
+    /**
+     * @see JSplitPane#JSplitPane(int, boolean, Component, Component)
+     */
+    public PJSplitPaneProportional(
+            PJSplitPaneOrientation newOrientation,
+            boolean newContinuousLayout,
+            Component newLeftComponent,
+            Component newRightComponent) {
+        super(
+            ObjectArgs.checkNotNull(newOrientation, "newOrientation").value,
+            newContinuousLayout,
+            newLeftComponent,
+            newRightComponent);
         PJSplitPaneInit();
     }
     
@@ -287,6 +342,40 @@ extends JSplitPane {
                 orient, JSplitPane.HORIZONTAL_SPLIT, JSplitPane.VERTICAL_SPLIT));
         }
         _debugLogger.debug("updateProportionalLocation() -> {}", getDividerProportionalLocation());
+    }
+    
+    /**
+     * This is a convenience method to call {@link #setOrientation(int)} with
+     * {@code orientation.value}.
+     * <p>
+     * The original Swing library was written before the {@code enum} type existed in Java.  As a
+     * result, many legacy methods use integers and further check for valid values.  This method
+     * simply replaces the integer parameter with a enumerated data type that is restricted to
+     * values allowed by the method {@link #setOrientation(int)}.
+     * 
+     * @throws NullPointerException
+     *         if {@code orientation} is {@code null}
+     * 
+     * @see #getOrientationAsEnum()
+     */
+    public void setOrientation(PJSplitPaneOrientation orientation) {
+        ObjectArgs.checkNotNull(orientation, "orientation");
+
+        setOrientation(orientation.value);
+    }
+    
+    /**
+     * This is a convenience method to call {@link #getOrientation()} and convert the result to
+     * enum type {@link PJSplitPaneOrientation}.
+     * 
+     * @see #getOrientation()
+     * @see #setOrientation(int)
+     * @see #setOrientation(PJSplitPaneOrientation)
+     */
+    public PJSplitPaneOrientation getOrientationAsEnum() {
+        int x = getOrientation();
+        PJSplitPaneOrientation y = PJSplitPaneOrientation.valueOf(x);
+        return y;
     }
 
     /**

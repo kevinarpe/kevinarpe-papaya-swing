@@ -75,11 +75,12 @@
     <maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
     <maven-surefire-report-plugin.version>2.14.1</maven-surefire-report-plugin.version>
     
-    <kevinarpe-papaya.version>0.0.7</kevinarpe-papaya.version>
+    <kevinarpe-papaya.version>0.0.8-SNAPSHOT</kevinarpe-papaya.version>
     <testng.version>6.8.1</testng.version>
     <guava.version>14.0.1</guava.version>
     <guava-testlib.version>14.0.1</guava-testlib.version>
     <logback-classic.version>1.0.13</logback-classic.version>
+    <batik.version>1.7</batik.version>
 <!--
     <commons-lang3.version>3.1</commons-lang3.version>
     <joda-time.version>2.2</joda-time.version>
@@ -266,6 +267,17 @@
       <artifactId>logback-classic</artifactId>
       <version>${logback-classic.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-rasterizer</artifactId>
+      <version>${batik.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xmlgraphics</groupId>
+      <artifactId>batik-swing</artifactId>
+      <version>${batik.version}</version>
+    </dependency>
+    
 <!--
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -310,4 +322,3 @@
     </profile>
   </profiles>
 </project>
-

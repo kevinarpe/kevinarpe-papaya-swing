@@ -26,13 +26,21 @@ package com.googlecode.kevinarpe.papaya.swing.demo;
  */
 
 import java.awt.BorderLayout;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+
+import com.googlecode.kevinarpe.papaya.ZipUtils;
 import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
+import com.googlecode.kevinarpe.papaya.swing.PSvgIcon;
 import com.googlecode.kevinarpe.papaya.swing.widget.PJLabel;
 
 public class PJLabelDemo
@@ -59,6 +67,22 @@ extends PAbstractSwingDemo {
         PSwingUtils.requestFocusAfterNextShow(filler);
         
         PJLabel label = new PJLabel("Sample\n&&\n&Example:");
+        try {
+//            final String filePath = "/home/kca/saveme/oxygen-icons-4.10.5/scalable/actions/window-close.svgz";
+            final String filePath = "/home/kca/saveme/oxygen-icons-4.10.5/scalable/actions/zoom-fit-best.svgz";
+            InputStream in = ZipUtils.createUnzipInputStream(new File(filePath));
+            TranscoderInput trin = new TranscoderInput(in);
+            PSvgIcon icon = new PSvgIcon(trin, 64, 64);
+            label.setIcon(icon);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        catch (TranscoderException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
         childPanel.add(label, BorderLayout.LINE_START);
         
         JTextField textField = new JTextField("Some sample text");
