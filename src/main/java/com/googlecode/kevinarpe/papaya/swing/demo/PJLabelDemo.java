@@ -27,20 +27,17 @@ package com.googlecode.kevinarpe.papaya.swing.demo;
 
 import java.awt.BorderLayout;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-
-import com.googlecode.kevinarpe.papaya.ZipUtils;
+import com.googlecode.kevinarpe.papaya.exception.PathException;
+import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
 import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
-import com.googlecode.kevinarpe.papaya.swing.PSvgIcon;
+import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconLoaderFixedDimensionFromPngFile;
+import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconName;
+import com.googlecode.kevinarpe.papaya.swing.theme.PThemeImageIcon;
 import com.googlecode.kevinarpe.papaya.swing.widget.PJLabel;
 
 public class PJLabelDemo
@@ -68,21 +65,32 @@ extends PAbstractSwingDemo {
         
         PJLabel label = new PJLabel("Sample\n&&\n&Example:");
         try {
-//            final String filePath = "/home/kca/saveme/oxygen-icons-4.10.5/scalable/actions/window-close.svgz";
-            final String filePath = "/home/kca/saveme/oxygen-icons-4.10.5/scalable/actions/zoom-fit-best.svgz";
-            InputStream in = ZipUtils.createUnzipInputStream(new File(filePath));
-            TranscoderInput trin = new TranscoderInput(in);
-            PSvgIcon icon = new PSvgIcon(trin, 64, 64);
+            PThemeIconLoaderFixedDimensionFromPngFile iconLoader =
+                new PThemeIconLoaderFixedDimensionFromPngFile(
+                    PImmutableDimension.getSharedFromWidthAndHeight(32, 32),
+                    new File("/home/kca/saveme/oxygen-icons-4.10.5"));
+            PThemeImageIcon icon = iconLoader.getIcon(PThemeIconName.ADDRESS_BOOK_NEW);
             label.setIcon(icon);
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+        catch (PathException e1) {
+            e1.printStackTrace();
         }
-        catch (TranscoderException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+//        try {
+////            final String filePath = "/home/kca/saveme/oxygen-icons-4.10.5/scalable/actions/window-close.svgz";
+//            final String filePath = "/home/kca/saveme/oxygen-icons-4.10.5/scalable/actions/zoom-fit-best.svgz";
+//            InputStream in = ZipUtils.createUnzipInputStream(new File(filePath));
+//            TranscoderInput trin = new TranscoderInput(in);
+//            PSvgIcon icon = new PSvgIcon(trin, 64, 64);
+//            label.setIcon(icon);
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
+//        catch (TranscoderException e) {
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
         childPanel.add(label, BorderLayout.LINE_START);
         
         JTextField textField = new JTextField("Some sample text");

@@ -29,38 +29,69 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
+import java.awt.Window;
 import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.accessibility.AccessibleContext;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+
+import com.google.common.io.ByteStreams;
 import com.googlecode.kevinarpe.papaya.StringUtils;
 import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
+import com.googlecode.kevinarpe.papaya.argument.PathArgs;
+import com.googlecode.kevinarpe.papaya.exception.ClassResourceNotFoundException;
+import com.googlecode.kevinarpe.papaya.exception.PathException;
+import com.googlecode.kevinarpe.papaya.exception.PathException.PathExceptionReason;
 import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconLoaderAbstract;
+import com.googlecode.kevinarpe.papaya.swing.theme.PThemeImageIcon;
 
 /**
  * Extends {@link ImageIcon} to load images asynchronously (non-blocking).  The JDK implementation,
  * {@code ImageIcon}, blocks on construction.  This version does not block on construction, but
- * <i>may</i> block when the image is first painted via
- * {@link #paintIcon(Component, Graphics, int, int)}.
+ * <i>may</i> block when any method from interface {@link Icon} is called:
+ * <ul>
+ *   <li>{@link #getIconWidth()}</li>
+ *   <li>{@link #getIconHeight()}</li>
+ *   <li>{@link #paintIcon(Component, Graphics, int, int)}</li>
+ * </ul>
  * <p>
- * The assumption behind the asynchronous load is the time between (i) construction and (ii) first
- * show of complex Swing widgets (dialogs and windows) is sufficiently long to load the image in a
- * background thread.  If insufficient, and the image has not yet finished loading, the image will
- * block during its first paint. 
+ * Opportunites for blocking can be further reduced by setting the expected image dimensions with
+ * {@link #setExpectedDimension(PImmutableDimension)}.  Before the image is done loading,
+ * {@link #getIconWidth()} and {@link #getIconHeight()} will return expected (instead of actual)
+ * image dimensions.  This is important to prevent blocking during initial layout, trigger by
+ * {@link Window#pack()}.  (Class {@link Window} is also inherited by class {@link JFrame}).  The
+ * expected image dimensions are set automatically when using subclass {@link PThemeImageIcon}.
+ * <p>
+ * In many cases, the time between construction and layout/paint is sufficiently long to load the
+ * image in a background thread.  If insufficient, the image will block. 
  * <p>
  * Query the image load status with {@link #updateImageLoadStatus()}, and wait for the image to
  * finish loading with {@link #waitForLoad(long)}.
  * <p>
  * To control whether or not exceptions are thrown if the image fails to load, call
  * {@link #ignoreIconLoadErrors(boolean)}.  By default, unchecked (runtime) exceptions <b>are</b>
- * thrown. 
+ * thrown.
+ * <p>
+ * Expanding upon the base class, new constructors are available to load (i) from byte streams
+ * ({@link InputStream}) or (ii) from classpath resources embedded in a JAR.
+ * <ul>
+ *   <li>{@link #PImageIconAsync(InputStream)}</li>
+ *   <li>{@link #PImageIconAsync(InputStream, String)} (with description)</li>
+ *   <li>{@link #PImageIconAsync(Class, String)}</li>
+ *   <li>{@link #PImageIconAsync(Class, String, String)} (with description)</li>
+ * </ul>
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  * 
  * @see ImageIcon
+ * @see PThemeImageIcon
  */
 @NotFullyTested
 @SuppressWarnings("serial")
@@ -68,7 +99,7 @@ public class PImageIconAsync
 extends ImageIcon {
     
     /**
-     * @see ImageIcon#ImageIcon()
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon()}.
      */
     public PImageIconAsync() {
         super();
@@ -78,68 +109,283 @@ extends ImageIcon {
         setIconWidth(DEFAULT_WIDTH);
         setIconHeight(DEFAULT_HEIGHT);
     }
+    
+    /**
+     * Reads all bytes from an {@link InputStream}, then calls
+     * {@link #PImageIconAsync(byte[], String)}.
+     * <p>
+     * This constructor is not available in base class {@link ImageIcon}.
+     * 
+     * @param in
+     *        stream of bytes for image data
+     * 
+     * @param optDescription
+     *        see {@link #setDescription(String)}.  May be {@code null}
+     * 
+     * @throws NullPointerException
+     *         if {@code in} is {@code null}
+     * @throws IOException
+     *         if an I/O error occurs when reading stream
+     * 
+     * @see #PImageIconAsync(InputStream)
+     * @see #PImageIconAsync(Class, String, String)
+     */
+    public PImageIconAsync(InputStream in, String optDescription)
+    throws IOException {
+        this(in);
+        setDescription(optDescription);
+    }
 
     /**
-     * @see ImageIcon#ImageIcon(byte[], String)
+     * Reads all bytes from an {@link InputStream}, then calls {@link #PImageIconAsync(byte[])}.
+     * <p>
+     * This constructor is not available in base class {@link ImageIcon}.
+     * 
+     * @param in
+     *        stream of bytes for image data
+     * 
+     * @throws NullPointerException
+     *         if {@code in} is {@code null}
+     * @throws IOException
+     *         if an I/O error occurs when reading stream
+     * 
+     * @see #PImageIconAsync(byte[])
+     * @see #PImageIconAsync(InputStream, String)
+     * @see #PImageIconAsync(Class, String)
      */
-    public PImageIconAsync(byte[] imageData, String description) {
-        super(imageData, description);
+    public PImageIconAsync(InputStream in)
+    throws IOException {
+        super(ByteStreams.toByteArray(ObjectArgs.checkNotNull(in, "in")));
+    }
+    
+    /**
+     * Finds a classpath resource by its path, creates an {@link InputStream}, then calls
+     * {@link #PImageIconAsync(InputStream, String)}.  This constructor is useful is loading images
+     * from classpath resources embedded in a JAR.
+     * <p>
+     * This constructor is not available in base class {@link ImageIcon}.
+     * 
+     * @param clazz
+     *        {@link Class} used to find resource
+     * @param classResourcePathname
+     *        path to class resource.  Read more here:
+     *        {@link PathArgs#checkClassResourceAsStreamExists(Class, String, String)}
+     * @param optDescription
+     *        see {@link #setDescription(String)}.  May be {@code null}
+     * 
+     * @throws NullPointerException
+     *         if {@code clazz} or {@code classResourcePathname} is {@code null}
+     * @throws IllegalArgumentException
+     *         if {@code classResourcePathname} is empty
+     * @throws ClassResourceNotFoundException
+     *         if resource is not found
+     * @throws IOException
+     *         if an I/O error occurs when reading stream
+     * 
+     * @see #PImageIconAsync(Class, String)
+     */
+    public PImageIconAsync(Class<?> clazz, String classResourcePathname, String optDescription)
+    throws ClassResourceNotFoundException, IOException {
+        this(clazz, classResourcePathname);
+        setDescription(optDescription);
+    }
+    
+    /**
+     * Finds a classpath resource by its path, creates an {@link InputStream}, then calls
+     * {@link #PImageIconAsync(InputStream)}.  This constructor is useful is loading images from
+     * classpath resources embedded in a JAR.
+     * <p>
+     * This constructor is not available in base class {@link ImageIcon}.
+     * 
+     * @param clazz
+     *        {@link Class} used to find resource
+     * @param classResourcePathname
+     *        path to class resource.  Read more here:
+     *        {@link PathArgs#checkClassResourceAsStreamExists(Class, String, String)}
+     * 
+     * @throws NullPointerException
+     *         if {@code clazz} or {@code classResourcePathname} is {@code null}
+     * @throws IllegalArgumentException
+     *         if {@code classResourcePathname} is empty
+     * @throws ClassResourceNotFoundException
+     *         if resource is not found
+     * @throws IOException
+     *         if an I/O error occurs when reading stream
+     * 
+     * @see #PImageIconAsync(Class, String)
+     */
+    public PImageIconAsync(Class<?> clazz, String classResourcePathname)
+    throws ClassResourceNotFoundException, IOException {
+        this(
+            PathArgs.checkClassResourceAsStreamExists(
+                clazz, classResourcePathname, "classResourcePathname"));
+    }
+
+    /**
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(byte[], String)}.
+     * <p>
+     * Parameter {@code optDescription} may be {@code null}.
+     * 
+     * @throws NullPointerException]
+     *         if {@code imageData} is {@code null}
+     */
+    public PImageIconAsync(byte[] imageData, String optDescription) {
+        super(
+            ObjectArgs.checkNotNull(imageData, "imageData"),
+            optDescription);
         PImageIconAsync_init();
     }
 
     /**
-     * @see ImageIcon#ImageIcon(byte[])
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(byte[])}.
+     * 
+     * @throws NullPointerException]
+     *         if {@code imageData} is {@code null}
      */
     public PImageIconAsync(byte[] imageData) {
-        super(imageData);
+        super(ObjectArgs.checkNotNull(imageData, "imageData"));
         PImageIconAsync_init();
     }
 
     /**
-     * @see ImageIcon#ImageIcon(Image, String)
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(Image, String)}.
+     * <p>
+     * Parameter {@code optDescription} may be {@code null}.
+     * 
+     * @throws NullPointerException]
+     *         if {@code image} is {@code null}
      */
-    public PImageIconAsync(Image image, String description) {
-        super(image, description);
+    public PImageIconAsync(Image image, String optDescription) {
+        super(
+            ObjectArgs.checkNotNull(image, "image"),
+            optDescription);
         PImageIconAsync_init();
     }
 
     /**
-     * @see ImageIcon#ImageIcon(Image)
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(Image)}.
+     * 
+     * @throws NullPointerException]
+     *         if {@code image} is {@code null}
      */
     public PImageIconAsync(Image image) {
-        super(image);
+        super(ObjectArgs.checkNotNull(image, "image"));
         PImageIconAsync_init();
     }
 
     /**
-     * @see ImageIcon#ImageIcon(String, String)
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(String, String)}.
+     * <p>
+     * Parameter {@code optDescription} may be {@code null}.
+     * 
+     * @throws NullPointerException
+     *         if {@code pathname} is {@code null}
+     * @throws IllegalArgumentException
+     *         if {@code pathname} is empty
+     * @throws PathException
+     * <ul>
+     *   <li>with reason {@link PathExceptionReason#PATH_DOES_NOT_EXIST}
+     *   if {@code pathname} does not exist</li>
+     *   <li>with reason {@link PathExceptionReason#PATH_IS_DIRECTORY}
+     *   if {@code pathname} exists, but is not a file</li>
+     * </ul>
      */
-    public PImageIconAsync(String filename, String description) {
-        super(filename, description);
-        PImageIconAsync_init();
+    public PImageIconAsync(String pathname, String optDescription)
+    throws PathException {
+        this(pathname);
+        setDescription(optDescription);
     }
 
     /**
-     * @see ImageIcon#ImageIcon(String)
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(String)}.
+     * 
+     * @throws NullPointerException
+     *         if {@code pathname} is {@code null}
+     * @throws IllegalArgumentException
+     *         if {@code pathname} is empty
+     * @throws PathException
+     * <ul>
+     *   <li>with reason {@link PathExceptionReason#PATH_DOES_NOT_EXIST}
+     *   if {@code pathname} does not exist</li>
+     *   <li>with reason {@link PathExceptionReason#PATH_IS_DIRECTORY}
+     *   if {@code pathname} exists, but is not a file</li>
+     * </ul>
      */
-    public PImageIconAsync(String filename) {
-        super(filename);
+    public PImageIconAsync(String pathname)
+    throws PathException {
+        super(PathArgs.checkFileExists(pathname, "pathname").getAbsolutePath());
         PImageIconAsync_init();
     }
-
+    
     /**
-     * @see ImageIcon#ImageIcon(URL, String)
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(String)} where
+     * {@code pathname} is {@code path.getAbsolutePath()}.
+     * <p>
+     * Parameter {@code optDescription} may be {@code null}.
+     * <p>
+     * This constructor is not available in base class {@link ImageIcon}.
+     * 
+     * @throws NullPointerException
+     *         if {@code path} is {@code null}
+     * @throws PathException
+     * <ul>
+     *   <li>with reason {@link PathExceptionReason#PATH_DOES_NOT_EXIST}
+     *   if {@code path} does not exist</li>
+     *   <li>with reason {@link PathExceptionReason#PATH_IS_DIRECTORY}
+     *   if {@code path} exists, but is not a file</li>
+     * </ul>
      */
-    public PImageIconAsync(URL location, String description) {
-        super(location, description);
+    public PImageIconAsync(File path, String optDescription)
+    throws PathException {
+        this(path);
+        setDescription(optDescription);
+    }
+    
+    /**
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(String)} where
+     * {@code pathname} is {@code path.getAbsolutePath()}.
+     * <p>
+     * This constructor is not available in base class {@link ImageIcon}.
+     * 
+     * @throws NullPointerException
+     *         if {@code path} is {@code null}
+     * @throws PathException
+     * <ul>
+     *   <li>with reason {@link PathExceptionReason#PATH_DOES_NOT_EXIST}
+     *   if {@code path} does not exist</li>
+     *   <li>with reason {@link PathExceptionReason#PATH_IS_DIRECTORY}
+     *   if {@code path} exists, but is not a file</li>
+     * </ul>
+     */
+    public PImageIconAsync(File path)
+    throws PathException {
+        super(PathArgs.checkFileExists(path, "path").getAbsolutePath());
         PImageIconAsync_init();
     }
 
     /**
-     * @see ImageIcon#ImageIcon(URL)
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(URL, String)}.
+     * <p>
+     * Parameter {@code optDescription} may be {@code null}.
+     * 
+     * @throws NullPointerException
+     *         if {@code location} is {@code null}
+     */
+    public PImageIconAsync(URL location, String optDescription) {
+        super(
+            ObjectArgs.checkNotNull(location, "location"),
+            optDescription);
+        PImageIconAsync_init();
+    }
+
+    /**
+     * This is a convenience constructor to call {@link ImageIcon#ImageIcon(URL)}.
+     * 
+     * @throws NullPointerException
+     *         if {@code location} is {@code null}
      */
     public PImageIconAsync(URL location) {
-        super(location);
+        super(ObjectArgs.checkNotNull(location, "location"));
         PImageIconAsync_init();
     }
     
@@ -163,29 +409,30 @@ extends ImageIcon {
     }
     
     private int _mediaTrackerId;
-    
     private PMediaTrackerLoadStatus _imageLoadStatus;
     
     /**
-     * Default value for {@link #getIconWidth()}.
+     * Default value for {@link #getIconWidth()}: -1
      */
     public static final int DEFAULT_WIDTH = -1;
     
     private int _width;
     
     /**
-     * Default value for {@link #getIconHeight()}.
+     * Default value for {@link #getIconHeight()}: -1
      */
     public static final int DEFAULT_HEIGHT = -1;
     
     private int _height;
     
     /**
-     * Default value for {@link #ignoreIconLoadErrors()}.
+     * Default value for {@link #ignoreIconLoadErrors()}: {@code false}
      */
     public static final boolean DEFAULT_IGNORE_ICON_LOAD_ERRORS = false;
     
     private boolean _ignoreIconLoadErrors;
+    
+    private PImmutableDimension _optExpectedDimension;
     
     /**
      * This is a convenience method to call {@link #getImageLoadStatusAsEnum()} and return the
@@ -286,6 +533,47 @@ extends ImageIcon {
     }
     
     /**
+     * Retrieves the expected number of pixels for image width and height.  An image file may be
+     * stored in a directory called "32x32", so the expected dimension is 32x32.  However, after
+     * loading, the actual size may be different.
+     * <p>
+     * If this value is set before the image is done loading, methods {@link #getIconWidth()} and
+     * {@link #getIconHeight()} will not block.
+     * <p>
+     * The default setting is {@code null}.
+     * 
+     * @return may be {@code null} if unset 
+     * 
+     * @see #setExpectedDimension(PImmutableDimension)
+     * @see #getIconWidth()
+     * @see #getIconHeight()
+     */
+    public PImmutableDimension getExpectedDimension() {
+        return _optExpectedDimension;
+    }
+    
+    /**
+     * Sets the expected number of pixels for image width and height.  An image file may be stored
+     * in a directory called "32x32", so the expected dimension is 32x32.  However, after loading,
+     * the actual size may be different.
+     * <p>
+     * If this value is set before the image is done loading, methods {@link #getIconWidth()} and
+     * {@link #getIconHeight()} will not block.
+     * <p>
+     * The default setting is {@code null}.
+     * 
+     * @param optDim
+     *        optional expected number of pixels for image width and height.  May be {@code null}
+     * 
+     * @see #getExpectedDimension()
+     * @see #getIconWidth()
+     * @see #getIconHeight()
+     */
+    public void setExpectedDimension(PImmutableDimension optDim) {
+        _optExpectedDimension = optDim;
+    }
+    
+    /**
      * This is a convenience method to call {@link #waitForLoad(long)} where {@code timeoutMillis}
      * is zero.
      */
@@ -381,21 +669,45 @@ extends ImageIcon {
      * {@inheritDoc}
      * 
      * @throws IllegalStateException
+     *         if {@link #ignoreIconLoadErrors()} is {@code true} <b>and</b> any case below:
      * <ul>
-     *   <li>if {@link #ignoreIconLoadErrors()} is {@code true}
-     *   <b>and</b> if {@link #waitForLoad()} throws {@link InterruptedException}</li>
-     *   <li>if {@link #ignoreIconLoadErrors()} is {@code true}
-     *   <b>and</b> if {@link #getImageLoadStatus()} is not
-     *   {@link PMediaTrackerLoadStatus#COMPLETE}</li>
+     *   <li>if {@link #waitForLoad()} throws {@link InterruptedException}</li>
+     *   <li>if {@link #getImageLoadStatus()} is not {@link PMediaTrackerLoadStatus#COMPLETE}</li>
+     *   <li>if {@link #getExpectedDimension()} is not {@code null} and does not match actual
+     *   loaded image dimensions</li>
      * </ul>
+     * 
+     * @see #checkImageLoadDone()
      */
     @Override
     public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
+        checkImageLoadDone();
+        super.paintIcon(c, g, x, y);
+    }
+    
+    /**
+     * Call by all methods from interface {@link Icon}.  This method will block if the image is not
+     * done loading.
+     * 
+     * @throws IllegalStateException
+     *         if {@link #ignoreIconLoadErrors()} is {@code true} <b>and</b> any case below:
+     * <ul>
+     *   <li>if {@link #waitForLoad()} throws {@link InterruptedException}</li>
+     *   <li>if {@link #getImageLoadStatus()} is not {@link PMediaTrackerLoadStatus#COMPLETE}</li>
+     *   <li>if {@link #getExpectedDimension()} is not {@code null} and does not match actual
+     *   loaded image dimensions</li>
+     * </ul>
+     * 
+     * @see #getIconWidth()
+     * @see #getIconHeight()
+     * @see #paintIcon(Component, Graphics, int, int)
+     */
+    protected void checkImageLoadDone() {
         final boolean ignoreErrors = ignoreIconLoadErrors();
-        final PMediaTrackerLoadStatus status = getImageLoadStatusAsEnum();
+        PMediaTrackerLoadStatus status = getImageLoadStatusAsEnum();
         if (!status.isDone) {
             try {
-                waitForLoad();
+                status = waitForLoad();
             }
             catch (InterruptedException e) {
                 if (!ignoreErrors) {
@@ -404,11 +716,24 @@ extends ImageIcon {
                 }
             }
         }
-        if (!ignoreErrors && PMediaTrackerLoadStatus.COMPLETE != status) {
-            String msg = formatError("Failed to load image");
-            throw new IllegalStateException(msg);
+        if (!ignoreErrors) {
+            // Might be PMediaTrackerLoadStatus.ABORTED or .ERRORED
+            if (PMediaTrackerLoadStatus.COMPLETE != status) {
+                String msg = formatError("Failed to load image");
+                throw new IllegalStateException(msg);
+            }
+            // Check expected vs. actual image dimensions
+            final PImmutableDimension optExpectedDim = getExpectedDimension();
+            if (null != optExpectedDim) {
+                final int actualWidth = getIconWidthDoNotBlock();
+                final int actualHeight = getIconHeightDoNotBlock();
+                if (actualWidth != optExpectedDim.width || actualHeight != optExpectedDim.height) {
+                    String msg = formatError("Expected dimensions (%s) do not match actual: %dx%d",
+                        optExpectedDim.getDescription(), actualWidth, actualHeight);
+                    throw new IllegalStateException(msg);
+                }
+            }
         }
-        super.paintIcon(c, g, x, y);
     }
     
     /**
@@ -448,33 +773,104 @@ extends ImageIcon {
                 status.toString(),
                 "\t",
                 StringUtils.TextProcessorOption.SKIP_FIRST_LINE);
+        PImmutableDimension dim = getExpectedDimension();
         String x = String.format(
             "%n\tgetIconWidth(): %d"
             + "%n\tgetIconHeight(): %d"
             + "%n\tgetImageLoadStatusAsEnum(): %s"
-            + "%n\tgetDescription(): '%s'",
+            + "%n\tgetDescription(): '%s'"
+            + "%n\tgetExpectedDimension(): '%s'",
             getIconWidth(),
             getIconHeight(),
             statusStr,
-            getDescription());
+            getDescription(),
+            dim.getDescription());
         return x;
     }
     
     /**
+     * Optimised override to reduce blocking opportunities.  If the expected dimensions were set
+     * with {@link #setExpectedDimension(PImmutableDimension)}, this method will not block before
+     * the image is done loading.
+     * 
+     * @throws IllegalStateException
+     *         if {@link #ignoreIconLoadErrors()} is {@code true} <b>and</b> any case below:
+     * <ul>
+     *   <li>if {@link #waitForLoad()} throws {@link InterruptedException}</li>
+     *   <li>if {@link #getImageLoadStatus()} is not {@link PMediaTrackerLoadStatus#COMPLETE}</li>
+     *   <li>if {@link #getExpectedDimension()} is not {@code null} and does not match actual
+     *   loaded image dimensions</li>
+     * </ul>
+     * 
+     * @see #setExpectedDimension(PImmutableDimension)
+     * @see #checkImageLoadDone()
      * @see #getIconHeight()
      * @see #setIconWidth(int)
      */
     @Override
     public int getIconWidth() {
+        // Small optimization to reduce number of calls to checkImageLoadDone().  During layout,
+        // this method is called many times!
+        if (DEFAULT_WIDTH == _width) {
+            PImmutableDimension optDim = getExpectedDimension();
+            if (null != optDim) {
+                return optDim.width;
+            }
+            checkImageLoadDone();
+        }
         return _width;
     }
     
     /**
+     * For subclasses to access members.
+     * 
+     * @see #getIconWidth()
+     * @see #getIconHeightDoNotBlock()
+     */
+    protected int getIconWidthDoNotBlock() {
+        return _width;
+    }
+    
+    /**
+     * Optimised override to reduce blocking opportunities.  If the expected dimensions were set
+     * with {@link #setExpectedDimension(PImmutableDimension)}, this method will not block before
+     * the image is done loading.
+     * 
+     * @throws IllegalStateException
+     *         if {@link #ignoreIconLoadErrors()} is {@code true} <b>and</b> any case below:
+     * <ul>
+     *   <li>if {@link #waitForLoad()} throws {@link InterruptedException}</li>
+     *   <li>if {@link #getImageLoadStatus()} is not {@link PMediaTrackerLoadStatus#COMPLETE}</li>
+     *   <li>if {@link #getExpectedDimension()} is not {@code null} and does not match actual
+     *   loaded image dimensions</li>
+     * </ul>
+     * 
+     * @see #setExpectedDimension(PImmutableDimension)
+     * @see #checkImageLoadDone()
      * @see #getIconWidth()
      * @see #setIconHeight(int)
      */
     @Override
     public int getIconHeight() {
+        // Small optimization to reduce number of calls to checkImageLoadDone().  During layout,
+        // this method is called many times!
+        if (DEFAULT_HEIGHT == _height) {
+            PImmutableDimension optDim = getExpectedDimension();
+            if (null != optDim) {
+                return optDim.height;
+            }
+            checkImageLoadDone();
+        }
+        return _height;
+    }
+    
+    /**
+     * For subclasses to access members.
+     * 
+     * @see #getIconHeight()
+     * @see #getIconWidthDoNotBlock()
+     */
+    protected int getIconHeightDoNotBlock() {
         return _height;
     }
     

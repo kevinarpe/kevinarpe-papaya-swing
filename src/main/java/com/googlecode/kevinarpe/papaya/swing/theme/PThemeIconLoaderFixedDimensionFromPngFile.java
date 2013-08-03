@@ -40,6 +40,9 @@ import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
  * Implementation of {@link PThemeIconLoaderAbstractFixedDimension} to load PNG images from file.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
+ * 
+ * @see PThemeIconLoaderAbstractFixedDimension
+ * @see PThemeIconLoaderAbstract
  */
 @NotFullyTested
 public class PThemeIconLoaderFixedDimensionFromPngFile
@@ -50,10 +53,7 @@ extends PThemeIconLoaderAbstractFixedDimension {
      */
     public static final String FILE_EXTENSION = "png";
     
-    /**
-     * Base directory path to icon files on disk, e.g., {@code "resources/theme-xyz/icons"}
-     */
-    public final File baseDirPath;
+    private final File _baseDirPath;
 
     /**
      * Creates a theme icon loader for PNG icons stored as files on disk.
@@ -74,13 +74,20 @@ extends PThemeIconLoaderAbstractFixedDimension {
     throws PathException {
         super(fixedDimension);
         PathArgs.checkDirectoryExists(baseDirPath, "baseDirPath");
-        this.baseDirPath = baseDirPath.getAbsoluteFile();
+        this._baseDirPath = baseDirPath.getAbsoluteFile();
+    }
+    
+    /**
+     * Base directory path to icon files on disk, e.g., {@code "resources/theme-xyz/icons"}
+     */
+    public File getBaseDirPath() {
+        return _baseDirPath;
     }
 
     /**
      * Creates a file path-based URL for the theme icon.  These are the file path parts:
      * <ol>
-     *   <li>{@link #baseDirPath}</li>
+     *   <li>{@link #_baseDirPath}</li>
      *   <li>{@code getFixedDimension().description}</li>
      *   <ul>
      *     <li>{@link #getFixedDimension()}</li>
@@ -114,7 +121,7 @@ extends PThemeIconLoaderAbstractFixedDimension {
         File filePath =
             new File(
                 new File(
-                    new File(baseDirPath, dim.description),
+                    new File(_baseDirPath, dim.getDescription()),
                     name.context.dirName),
                 name.baseFileName + ".png");
         if (!filePath.exists()) {

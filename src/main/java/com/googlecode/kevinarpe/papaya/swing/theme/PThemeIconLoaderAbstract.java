@@ -55,7 +55,7 @@ public abstract class PThemeIconLoaderAbstract {
     private Map<PThemeIconName, PThemeImageIcon> _nameToIconMap;
     
     /**
-     * Default value for {@link #ignoreIconLoadErrors()}.
+     * Default value for {@link #ignoreIconLoadErrors()}: {@code false}
      */
     public static final boolean DEFAULT_IGNORE_ICON_LOAD_ERRORS =
         PImageIconAsync.DEFAULT_IGNORE_ICON_LOAD_ERRORS;

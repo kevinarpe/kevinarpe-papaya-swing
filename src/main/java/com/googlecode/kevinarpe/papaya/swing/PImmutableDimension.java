@@ -27,20 +27,28 @@ package com.googlecode.kevinarpe.papaya.swing;
 
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
-
+import java.util.HashMap;
+import java.util.Map;
 import com.google.common.base.Objects;
 import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 
 /**
- * Immutable version of {@link Dimension}.
+ * Immutable version of {@link Dimension}.  There are no public constructors.  Instead, use the
+ * factory methods:
+ * <ul>
+ *   <li>{@link #getSharedFromDefaultWidthAndHeight()}</li>
+ *   <li>{@link #getSharedFromWidthAndHeight(int, int)}</li>
+ *   <li>{@link #createFromWidthAndHeight(int, int)}</li>
+ *   <li>{@link #copyOfDimension(Dimension)}</li>
+ *   <li></li>
+ * </ul>
  * <p>
  * All instances of this class are fully immutable, thus thread-safe, and safe to store as
  * {@code static final} constants.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  * 
- * @see #copyOfDimension(Dimension)
  * @see Dimension
  * @see Dimension2D
  */
@@ -49,12 +57,12 @@ public final class PImmutableDimension
 extends Dimension2D {
     
     /**
-     * Default value for field {@link #width} and method {@link #getWidth()}.
+     * Default value for field {@link #width} and method {@link #getWidth()}: zero.
      */
     public static final int DEFAULT_WIDTH;
     
     /**
-     * Default value for field {@link #height} and method {@link #getHeight()}.
+     * Default value for field {@link #height} and method {@link #getHeight()}: zero.
      */
     public static final int DEFAULT_HEIGHT;
     
@@ -76,48 +84,101 @@ extends Dimension2D {
      */
     public final int height;
     
+    private String _description;
+    
     /**
-     * {@link #width} {@code + "x" +} {@link #height}, e.g., "32x32"
+     * Creates a description from {@link #width} and {@link #height}, e.g., "32x32"
      */
-    public final String description;
-
-    /**
-     * Calls {@link #PImmutableDimension(int, int)} with {@link #DEFAULT_WIDTH} and
-     * {@link #DEFAULT_HEIGHT}.
-     */
-    public PImmutableDimension() {
-        this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    public String getDescription() {
+        if (null == _description) {
+            _description = String.format("%dx%d", width, height);
+        }
+        return _description;
     }
 
+    private PImmutableDimension(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    private static final Map<Long, PImmutableDimension> _cacheMap =
+        new HashMap<Long, PImmutableDimension>();
+    
     /**
-     * Like {@link Dimension}, the inputs are unchecked.
+     * Calls {@link #getSharedFromWidthAndHeight(int, int)} with {@link #DEFAULT_WIDTH} and
+     * {@link #DEFAULT_HEIGHT}.
+     */
+    public static PImmutableDimension getSharedFromDefaultWidthAndHeight() {
+        PImmutableDimension x = getSharedFromWidthAndHeight(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        return x;
+    }
+    
+    /**
+     * Like {@link Dimension}, the inputs are unchecked.  This method uses caching.  To avoid the
+     * cache, see {@link #createFromWidthAndHeight(int, int)}.
      * 
      * @param width
      *        any integer value -- unchecked
      * @param height
      *        any integer value -- unchecked
+     * 
+     * @return shared ref that matches {@code width} and {@code height}
+     * 
+     * @see #createFromWidthAndHeight(int, int)
+     * @see #copyOfDimension(Dimension)
      */
-    public PImmutableDimension(int width, int height) {
-        this.width = width;
-        this.height = height;
-        description = String.format("%dx%d", width, height);
+    public static PImmutableDimension getSharedFromWidthAndHeight(int width, int height) {
+        // Primitive type int is 32 bits, and long is 64 bits.
+        // Key: High 32 bits are for width; low are for height.
+        long key = ((long) width) << ((long) Integer.SIZE) | ((long) height);
+        PImmutableDimension x = _cacheMap.get(key);
+        if (null == x) {
+            x = new PImmutableDimension(width, height);
+            _cacheMap.put(key, x);
+        }
+        return x;
+    }
+    
+    /**
+     * Creates a new instance from inputs.  This method does <b>not</b> use caching.  To use the
+     * cache, see {@link #getSharedFromWidthAndHeight(int, int)}.
+     * 
+     * @param width
+     *        any integer value -- unchecked
+     * @param height
+     *        any integer value -- unchecked
+     * 
+     * @return new instance
+     * 
+     * @see #getSharedFromWidthAndHeight(int, int)
+     * @see #copyOfDimension(Dimension)
+     */
+    public static PImmutableDimension createFromWidthAndHeight(int width, int height) {
+        PImmutableDimension x = new PImmutableDimension(width, height);
+        return x;
     }
     
     /**
      * Creates a new {@link PImmutableDimension} from another {@link Dimension}.
+     * <p>
+     * This is a convenience method to call {@link #createFromWidthAndHeight(int, int)} with
+     * {@code dim.width} and {@code dim.height}.
      * 
      * @param dim
      *        another {@link Dimension} to copy.  Must not be {@code null}
      * 
-     * @return new {@link PImmutableDimension}
+     * @return dimension ref that matches {@code width} and {@code height}
      * 
      * @throws NullPointerException
      *         if {@code dim} is {@code null}
+     * 
+     * @see #getSharedFromWidthAndHeight(int, int)
+     * @see #createFromWidthAndHeight(int, int)
      */
     public static PImmutableDimension copyOfDimension(Dimension dim) {
         ObjectArgs.checkNotNull(dim, "dim");
         
-        PImmutableDimension x = new PImmutableDimension(dim.width, dim.height);
+        PImmutableDimension x = createFromWidthAndHeight(dim.width, dim.height);
         return x;
     }
 
@@ -179,10 +240,12 @@ extends Dimension2D {
             "class %s ["
             + "%n\twidth: %d"
             + "%n\theight: %d"
+            + "%n\tgetDescription(): '%s'"
             + "%n\t]",
             PImmutableDimension.class.getCanonicalName(),
             width,
-            height);
+            height,
+            getDescription());
         return x;
     }
 }
