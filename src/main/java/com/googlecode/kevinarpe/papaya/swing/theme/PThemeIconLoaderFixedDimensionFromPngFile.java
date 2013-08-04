@@ -30,10 +30,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.argument.PathArgs;
 import com.googlecode.kevinarpe.papaya.exception.PathException;
+import com.googlecode.kevinarpe.papaya.exception.PathException.PathExceptionReason;
 import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
 
 /**
@@ -44,7 +45,7 @@ import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
  * @see PThemeIconLoaderAbstractFixedDimension
  * @see PThemeIconLoaderAbstract
  */
-@NotFullyTested
+@FullyTested
 public class PThemeIconLoaderFixedDimensionFromPngFile
 extends PThemeIconLoaderAbstractFixedDimension {
     
@@ -66,6 +67,14 @@ extends PThemeIconLoaderAbstractFixedDimension {
      * 
      * @throws NullPointerException
      *         if {@code fixedDimension} or {@code baseDirPath} is {@code null}
+     * @throws PathException
+     * <ul>
+     *   <li>with reason {@link PathExceptionReason#PATH_DOES_NOT_EXIST}
+     *   if {@code baseDirPath} does not exist</li>
+     *   <li>with reason {@link PathExceptionReason#PATH_IS_FILE}
+     *   if {@code baseDirPath} exists, but is not a directory</li>
+     *   <li></li>
+     * </ul>
      * 
      * @throws PathException
      */
@@ -87,7 +96,7 @@ extends PThemeIconLoaderAbstractFixedDimension {
     /**
      * Creates a file path-based URL for the theme icon.  These are the file path parts:
      * <ol>
-     *   <li>{@link #_baseDirPath}</li>
+     *   <li>{@link #getBaseDirPath()}</li>
      *   <li>{@code getFixedDimension().description}</li>
      *   <ul>
      *     <li>{@link #getFixedDimension()}</li>
@@ -103,6 +112,7 @@ extends PThemeIconLoaderAbstractFixedDimension {
      *     <li>{@link PThemeIconName#baseFileName}</li>
      *   </ul>
      * </ol>
+     * <p>
      * Example: {@link PThemeIconName#ADDRESS_BOOK_NEW} may map to
      * {@code "img/32x32/actions/address-book-new.png"}
      * <hr>

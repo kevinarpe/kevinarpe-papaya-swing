@@ -25,6 +25,7 @@ package com.googlecode.kevinarpe.papaya.swing.theme;
  * #L%
  */
 
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
 
@@ -42,6 +43,7 @@ import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
  * 
  * @see PThemeIconLoaderFixedDimensionFromPngFile
  */
+@FullyTested
 public abstract class PThemeIconLoaderAbstractFixedDimension
 extends PThemeIconLoaderAbstract {
 

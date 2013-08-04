@@ -25,8 +25,10 @@ package com.googlecode.kevinarpe.papaya.swing;
  * #L%
  */
 
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import com.googlecode.kevinarpe.papaya.test.TestAssertUtils;
 
 public class PMediaTrackerLoadStatusTest {
 
@@ -57,9 +59,6 @@ public class PMediaTrackerLoadStatusTest {
     
     @Test
     public void toString_Pass() {
-        for (PMediaTrackerLoadStatus e: PMediaTrackerLoadStatus.values()) {
-            String x = e.toString();
-            Assert.assertNotNull(x);
-        }
+        TestAssertUtils.assertToStringMethodValid(PMediaTrackerLoadStatus.values());
     }
 }

@@ -25,6 +25,7 @@ package com.googlecode.kevinarpe.papaya.swing.theme;
  * #L%
  */
 
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.StringArgs;
 
 /**
@@ -43,6 +44,7 @@ import com.googlecode.kevinarpe.papaya.argument.StringArgs;
  * @see PThemeIconName
  * @see PThemeIconName#context
  */
+@FullyTested
 public enum PThemeIconContextName {
 
     /**
@@ -116,6 +118,9 @@ public enum PThemeIconContextName {
     STATUS("status"),
     ;
     
+    /**
+     * Directory name for this standard theme icon context (category), e.g., {@code "status"}.
+     */
     public final String dirName;
     
     private PThemeIconContextName(String dirName) {

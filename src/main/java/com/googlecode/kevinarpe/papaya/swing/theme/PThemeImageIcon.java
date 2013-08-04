@@ -28,7 +28,7 @@ package com.googlecode.kevinarpe.papaya.swing.theme;
 import java.net.URL;
 
 import com.googlecode.kevinarpe.papaya.StringUtils;
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.swing.PImageIconAsync;
 import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
@@ -43,7 +43,7 @@ import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
  * @see PThemeIconLoaderAbstractFixedDimension
  * @see PThemeIconLoaderFixedDimensionFromPngFile
  */
-@NotFullyTested
+@FullyTested
 @SuppressWarnings("serial")
 public class PThemeImageIcon
 extends PImageIconAsync {
@@ -55,6 +55,15 @@ extends PImageIconAsync {
      * Create an icon from a standard theme.  Normally, this constructor should be called
      * indirectly by {@link PThemeIconLoaderAbstract#tryGetIcon(PThemeIconName)} or
      * {@link PThemeIconLoaderAbstract#getIcon(PThemeIconName)}.
+     * <p>
+     * The icon description ({@link #getDescription()}) is generated from:
+     * <ul>
+     *   <li>{@code name.baseFileName} - {@link PThemeIconName#baseFileName}</li>
+     *   <li>{@code expectedDimension.getDescription()} -
+     *   {@link PImmutableDimension#getDescription()}</li>
+     * </ul>
+     * <p>
+     * Example description: {@code "application-exit:22x22"}
      * 
      * @param expectedDimension
      *        see {@link #getExpectedDimension()}.  Must not be {@code null}

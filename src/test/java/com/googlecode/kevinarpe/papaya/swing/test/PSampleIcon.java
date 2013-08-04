@@ -38,7 +38,7 @@ import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconName;
 
 public final class PSampleIcon {
     
-    private static final String THEME_NAME = "oxygen-icons-4.10.5";
+    public static final String THEME_DIR_NAME = "oxygen-icons-4.10.5";
     
     public static final PSampleIcon EDIT_REDO_16x16;
     public static final PSampleIcon EDIT_REDO_22x22;
@@ -74,7 +74,7 @@ public final class PSampleIcon {
         this.imageDimension = ObjectArgs.checkNotNull(imageDimension, "imageDimension");
         this.themeIconName = ObjectArgs.checkNotNull(themeIconName, "themeIconName");
         String resourcePathname =
-            "/" + THEME_NAME
+            "/" + THEME_DIR_NAME
             + "/" + imageDimension.getDescription()
             + "/" + themeIconName.context.dirName
             + "/" + themeIconName.baseFileName + ".png";

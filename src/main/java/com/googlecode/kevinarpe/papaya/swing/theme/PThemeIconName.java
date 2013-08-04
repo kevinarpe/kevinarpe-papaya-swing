@@ -26,6 +26,7 @@ package com.googlecode.kevinarpe.papaya.swing.theme;
  */
 
 import com.googlecode.kevinarpe.papaya.StringUtils;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.argument.StringArgs;
 
@@ -43,6 +44,7 @@ import com.googlecode.kevinarpe.papaya.argument.StringArgs;
  * 
  * @see PThemeIconContextName
  */
+@FullyTested
 public enum PThemeIconName {
 
     /**
@@ -1471,7 +1473,14 @@ public enum PThemeIconName {
     WEATHER_STORM(PThemeIconContextName.STATUS, "weather-storm"),
     ;
     
+    /**
+     * Category for this standard theme icon, e.g., {@link PThemeIconContextName#STATUS}.
+     */
     public final PThemeIconContextName context;
+    
+    /**
+     * Base filename for this standard theme icon, e.g., {@code "weather-storm"}.
+     */
     public final String baseFileName;
     
     private PThemeIconName(PThemeIconContextName context, String baseFileName) {
@@ -1499,7 +1508,7 @@ public enum PThemeIconName {
             "enum %s: ["
             + "%n\tname(): '%s'"
             + "%n\tcontext: %s"
-            + "%n\baseFileName: '%s'"
+            + "%n\tbaseFileName: '%s'"
             + "%n\t]",
             PThemeIconName.class.getCanonicalName(),
             name(),

@@ -32,7 +32,7 @@ import java.util.Map;
 
 import javax.swing.Icon;
 
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.swing.PImageIconAsync;
 
@@ -49,7 +49,7 @@ import com.googlecode.kevinarpe.papaya.swing.PImageIconAsync;
  * @see #getIcon(PThemeIconName)
  * @see #iconExists(PThemeIconName)
  */
-@NotFullyTested
+@FullyTested
 public abstract class PThemeIconLoaderAbstract {
 
     private Map<PThemeIconName, PThemeImageIcon> _nameToIconMap;

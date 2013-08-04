@@ -725,8 +725,8 @@ extends ImageIcon {
             // Check expected vs. actual image dimensions
             final PImmutableDimension optExpectedDim = getExpectedDimension();
             if (null != optExpectedDim) {
-                final int actualWidth = getIconWidthDoNotBlock();
-                final int actualHeight = getIconHeightDoNotBlock();
+                final int actualWidth = getIconWidthCore();
+                final int actualHeight = getIconHeightCore();
                 if (actualWidth != optExpectedDim.width || actualHeight != optExpectedDim.height) {
                     String msg = formatError("Expected dimensions (%s) do not match actual: %dx%d",
                         optExpectedDim.getDescription(), actualWidth, actualHeight);
@@ -781,8 +781,8 @@ extends ImageIcon {
             + "%n\tgetImageLoadStatusAsEnum(): %s"
             + "%n\tgetDescription(): '%s'"
             + "%n\tgetExpectedDimension(): %s",
-            getIconWidthDoNotBlock(),
-            getIconHeightDoNotBlock(),
+            getIconWidthCore(),
+            getIconHeightCore(),
             statusStr,
             getDescription(),
             dimStr);
@@ -810,16 +810,17 @@ extends ImageIcon {
      */
     @Override
     public int getIconWidth() {
+        final int width = getIconWidthCore();
         // Small optimization to reduce number of calls to checkImageLoadDone().  During layout,
         // this method is called many times!
-        if (DEFAULT_WIDTH == _width) {
+        if (DEFAULT_WIDTH == width) {
             PImmutableDimension optDim = getExpectedDimension();
             if (null != optDim) {
                 return optDim.width;
             }
             checkImageLoadDone();
         }
-        return _width;
+        return width;
     }
     
     /**
@@ -827,9 +828,9 @@ extends ImageIcon {
      * not to block.
      * 
      * @see #getIconWidth()
-     * @see #getIconHeightDoNotBlock()
+     * @see #getIconHeightCore()
      */
-    protected int getIconWidthDoNotBlock() {
+    protected int getIconWidthCore() {
         return _width;
     }
     
@@ -854,16 +855,17 @@ extends ImageIcon {
      */
     @Override
     public int getIconHeight() {
+        final int height = getIconHeightCore();
         // Small optimization to reduce number of calls to checkImageLoadDone().  During layout,
         // this method is called many times!
-        if (DEFAULT_HEIGHT == _height) {
+        if (DEFAULT_HEIGHT == height) {
             PImmutableDimension optDim = getExpectedDimension();
             if (null != optDim) {
                 return optDim.height;
             }
             checkImageLoadDone();
         }
-        return _height;
+        return height;
     }
     
     /**
@@ -871,9 +873,9 @@ extends ImageIcon {
      * guaranteed not to block.
      * 
      * @see #getIconHeight()
-     * @see #getIconWidthDoNotBlock()
+     * @see #getIconWidthCore()
      */
-    protected int getIconHeightDoNotBlock() {
+    protected int getIconHeightCore() {
         return _height;
     }
     

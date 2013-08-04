@@ -652,6 +652,7 @@ public class PImageIconAsyncTest {
     throws PathException {
         PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
         boolean b = y.ignoreIconLoadErrors();
+        Assert.assertEquals(b, PImageIconAsync.DEFAULT_IGNORE_ICON_LOAD_ERRORS);
         y.ignoreIconLoadErrors(b);
         boolean b2 = y.ignoreIconLoadErrors();
         Assert.assertEquals(b2, b);
@@ -743,6 +744,7 @@ public class PImageIconAsyncTest {
     public void getIconWidthAndHeight_Pass(PSampleIcon x, String desc)
     throws PathException {
         PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        y.setExpectedDimension(x.imageDimension);
         Assert.assertEquals(y.getIconWidth(), x.imageDimension.width);
         Assert.assertEquals(y.getIconHeight(), x.imageDimension.height);
     }
