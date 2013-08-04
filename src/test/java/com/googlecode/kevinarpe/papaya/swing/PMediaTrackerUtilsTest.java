@@ -1,4 +1,4 @@
-package com.googlecode.kevinarpe.papaya.swing.theme;
+package com.googlecode.kevinarpe.papaya.swing;
 
 /*
  * #%L
@@ -25,31 +25,33 @@ package com.googlecode.kevinarpe.papaya.swing.theme;
  * #L%
  */
 
+import java.awt.MediaTracker;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.googlecode.kevinarpe.papaya.test.TestAssertUtils;
-
-public class PThemeIconContextNameTest {
+public class PMediaTrackerUtilsTest {
 
     ///////////////////////////////////////////////////////////////////////////
-    // PThemeIconContextName.dirName
+    // PMediaTrackerUtils.getSharedMediaTracker
     //
     
     @Test
-    public void dirName_Pass() {
-        for (PThemeIconContextName e: PThemeIconContextName.values()) {
-            Assert.assertNotNull(e.dirName);
-            Assert.assertTrue(!e.dirName.isEmpty(), "!isEmpty");
-        }
+    public void getSharedMediaTracker_Pass() {
+        MediaTracker x = PMediaTrackerUtils.getSharedMediaTracker();
+        Assert.assertNotNull(x);
+        MediaTracker y = PMediaTrackerUtils.getSharedMediaTracker();
+        Assert.assertTrue(x == y);
     }
-
+    
     ///////////////////////////////////////////////////////////////////////////
-    // PThemeIconContextName.toString()
+    // PMediaTrackerUtils.getNextMediaTrackerId
     //
     
     @Test
-    public void toString_Pass() {
-        TestAssertUtils.assertToStringMethodValid(PThemeIconContextName.values());
+    public void getNextMediaTrackerId_Pass() {
+        int x = PMediaTrackerUtils.getNextMediaTrackerId();
+        int y = PMediaTrackerUtils.getNextMediaTrackerId();
+        Assert.assertTrue(x != y);
     }
 }

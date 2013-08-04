@@ -29,8 +29,16 @@ import java.awt.Component;
 import java.awt.MediaTracker;
 
 import com.googlecode.kevinarpe.papaya.FuncUtils;
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 
+/**
+ * Collection of static methods for {@link MediaTracker}.
+ * 
+ * @author Kevin Connor ARPE (kevinarpe@gmail.com)
+ * 
+ * @see PSwingPropertyUtils
+ * @see PMediaTrackerLoadStatus
+ */
 public final class PMediaTrackerUtils {
     
     // Disable default constructor
@@ -59,7 +67,7 @@ public final class PMediaTrackerUtils {
      * 
      * @see PSwingPropertyUtils
      */
-    @NotFullyTested
+    @FullyTested
     public static MediaTracker getSharedMediaTracker() {
         MediaTracker x = (MediaTracker)
             PSwingPropertyUtils.getAndPutIfMissing(
@@ -74,7 +82,7 @@ public final class PMediaTrackerUtils {
      * Deep: This counter is shared across all top-level thread groups ("application contexts").
      * Read more here: {@link PSwingPropertyUtils}.
      */
-    @NotFullyTested
+    @FullyTested
     public static int getNextMediaTrackerId() {
         synchronized (MEDIA_TRACKER_APP_CONTEXT_KEY) {
             ++_mediaTrackerId;

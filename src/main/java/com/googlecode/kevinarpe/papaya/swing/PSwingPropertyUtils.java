@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.googlecode.kevinarpe.papaya.FuncUtils;
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 
 /**
@@ -100,7 +100,7 @@ public final class PSwingPropertyUtils {
      * @see Thread#getThreadGroup()
      * @see sun.awt.AppContext#get(Object)
      */
-    @NotFullyTested
+    @FullyTested
     public static Object get(Object key) {
         ObjectArgs.checkNotNull(key, "key");
         
@@ -141,7 +141,7 @@ public final class PSwingPropertyUtils {
      * @see #remove(Object)
      * @see sun.awt.AppContext#get(Object)
      */
-    @NotFullyTested
+    @FullyTested
     public static Object getAndPutIfMissing(Object key, FuncUtils.Func0<Object> createValueFunc) {
         ObjectArgs.checkNotNull(key, "key");
         ObjectArgs.checkNotNull(createValueFunc, "createValueFunc");
@@ -184,7 +184,7 @@ public final class PSwingPropertyUtils {
      * @see Thread#getThreadGroup()
      * @see sun.awt.AppContext#put(Object, Object)
      */
-    @NotFullyTested
+    @FullyTested
     public static Object put(Object key, Object value) {
         ObjectArgs.checkNotNull(key, "key");
         ObjectArgs.checkNotNull(value, "value");
@@ -216,7 +216,7 @@ public final class PSwingPropertyUtils {
      * @see Thread#getThreadGroup()
      * @see sun.awt.AppContext#remove(Object)
      */
-    @NotFullyTested
+    @FullyTested
     public static Object remove(Object key) {
         ObjectArgs.checkNotNull(key, "key");
         

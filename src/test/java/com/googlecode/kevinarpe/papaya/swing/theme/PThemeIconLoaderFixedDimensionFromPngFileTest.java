@@ -1,8 +1,32 @@
 package com.googlecode.kevinarpe.papaya.swing.theme;
 
+/*
+ * #%L
+ * This file is part of Papaya Swing.
+ * %%
+ * Copyright (C) 2013 Kevin Connor ARPE (kevinarpe@gmail.com)
+ * %%
+ * Papaya Swing is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * GPL Classpath Exception:
+ * This project is subject to the "Classpath" exception as provided in
+ * the LICENSE file that accompanied this code.
+ * 
+ * Papaya Swing is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Papaya Swing.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.testng.Assert;
@@ -24,8 +48,7 @@ public class PThemeIconLoaderFixedDimensionFromPngFileTest {
         new File("src/test/resources/" + PSampleIcon.THEME_DIR_NAME);
     
     @DataProvider
-    private static final Object[][] _ctor_FailWithNull_Data()
-    throws MalformedURLException {
+    private static final Object[][] _ctor_FailWithNull_Data() {
         return new Object[][] {
 //                {
 //                    PSampleIcon.EDIT_REDO_16x16.imageDimension,
