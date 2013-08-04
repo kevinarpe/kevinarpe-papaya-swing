@@ -75,7 +75,7 @@
     <maven-project-info-reports-plugin.version>2.7</maven-project-info-reports-plugin.version>
     <maven-surefire-report-plugin.version>2.14.1</maven-surefire-report-plugin.version>
     
-    <kevinarpe-papaya.version>0.0.8-SNAPSHOT</kevinarpe-papaya.version>
+    <kevinarpe-papaya.version>0.0.8</kevinarpe-papaya.version>
     <testng.version>6.8.1</testng.version>
     <guava.version>14.0.1</guava.version>
     <guava-testlib.version>14.0.1</guava-testlib.version>
