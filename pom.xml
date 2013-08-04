@@ -12,7 +12,7 @@
   </parent>
   <groupId>com.googlecode.kevinarpe-papaya-swing</groupId>
   <artifactId>kevinarpe-papaya-swing</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <packaging>jar</packaging>
   <description>Papaya Swing: Utilities for Java 1.6+ Swing written by Kevin Connor ARPE</description>
@@ -42,7 +42,7 @@
     <connection>scm:git:https://code.google.com/p/kevinarpe-papaya-swing/</connection>
     <developerConnection>scm:git:https://code.google.com/p/kevinarpe-papaya-swing/</developerConnection>
     <url>http://code.google.com/p/kevinarpe-papaya-swing/source/browse</url>
-    <tag>kevinarpe-papaya-swing-0.0.2</tag>
+    <tag>HEAD</tag>
   </scm>
   <developers>
     <developer>
