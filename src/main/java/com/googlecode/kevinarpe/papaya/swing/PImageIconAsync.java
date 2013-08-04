@@ -43,7 +43,7 @@ import javax.swing.JFrame;
 
 import com.google.common.io.ByteStreams;
 import com.googlecode.kevinarpe.papaya.StringUtils;
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.argument.PathArgs;
 import com.googlecode.kevinarpe.papaya.exception.ClassResourceNotFoundException;
@@ -93,7 +93,7 @@ import com.googlecode.kevinarpe.papaya.swing.theme.PThemeImageIcon;
  * @see ImageIcon
  * @see PThemeImageIcon
  */
-@NotFullyTested
+@FullyTested
 @SuppressWarnings("serial")
 public class PImageIconAsync
 extends ImageIcon {
@@ -774,17 +774,18 @@ extends ImageIcon {
                 "\t",
                 StringUtils.TextProcessorOption.SKIP_FIRST_LINE);
         PImmutableDimension dim = getExpectedDimension();
+        String dimStr = (null == dim ? "null" : String.format("'%s'", dim.getDescription()));
         String x = String.format(
             "%n\tgetIconWidth(): %d"
             + "%n\tgetIconHeight(): %d"
             + "%n\tgetImageLoadStatusAsEnum(): %s"
             + "%n\tgetDescription(): '%s'"
-            + "%n\tgetExpectedDimension(): '%s'",
-            getIconWidth(),
-            getIconHeight(),
+            + "%n\tgetExpectedDimension(): %s",
+            getIconWidthDoNotBlock(),
+            getIconHeightDoNotBlock(),
             statusStr,
             getDescription(),
-            dim.getDescription());
+            dimStr);
         return x;
     }
     
@@ -794,12 +795,12 @@ extends ImageIcon {
      * the image is done loading.
      * 
      * @throws IllegalStateException
-     *         if {@link #ignoreIconLoadErrors()} is {@code true} <b>and</b> any case below:
+     *         if {@link #getExpectedDimension()} is {@code null},
+     *         <b>and</b> if {@link #ignoreIconLoadErrors()} is {@code true},
+     *         <b>and</b> any case below:
      * <ul>
      *   <li>if {@link #waitForLoad()} throws {@link InterruptedException}</li>
      *   <li>if {@link #getImageLoadStatus()} is not {@link PMediaTrackerLoadStatus#COMPLETE}</li>
-     *   <li>if {@link #getExpectedDimension()} is not {@code null} and does not match actual
-     *   loaded image dimensions</li>
      * </ul>
      * 
      * @see #setExpectedDimension(PImmutableDimension)
@@ -822,7 +823,8 @@ extends ImageIcon {
     }
     
     /**
-     * For subclasses to access members.
+     * For subclasses to access members.  Unlike {@link #getIconWidth()}, this method is guaranteed
+     * not to block.
      * 
      * @see #getIconWidth()
      * @see #getIconHeightDoNotBlock()
@@ -837,12 +839,12 @@ extends ImageIcon {
      * the image is done loading.
      * 
      * @throws IllegalStateException
-     *         if {@link #ignoreIconLoadErrors()} is {@code true} <b>and</b> any case below:
+     *         if {@link #getExpectedDimension()} is {@code null},
+     *         <b>and</b> if {@link #ignoreIconLoadErrors()} is {@code true},
+     *         <b>and</b> any case below:
      * <ul>
      *   <li>if {@link #waitForLoad()} throws {@link InterruptedException}</li>
      *   <li>if {@link #getImageLoadStatus()} is not {@link PMediaTrackerLoadStatus#COMPLETE}</li>
-     *   <li>if {@link #getExpectedDimension()} is not {@code null} and does not match actual
-     *   loaded image dimensions</li>
      * </ul>
      * 
      * @see #setExpectedDimension(PImmutableDimension)
@@ -865,7 +867,8 @@ extends ImageIcon {
     }
     
     /**
-     * For subclasses to access members.
+     * For subclasses to access members.  Unlike {@link #getIconHeight()}, this method is
+     * guaranteed not to block.
      * 
      * @see #getIconHeight()
      * @see #getIconWidthDoNotBlock()

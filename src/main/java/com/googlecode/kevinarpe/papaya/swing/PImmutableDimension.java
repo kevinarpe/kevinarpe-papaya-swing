@@ -30,7 +30,7 @@ import java.awt.geom.Dimension2D;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.common.base.Objects;
-import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 
 /**
@@ -52,7 +52,7 @@ import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
  * @see Dimension
  * @see Dimension2D
  */
-@NotFullyTested
+@FullyTested
 public final class PImmutableDimension
 extends Dimension2D {
     
@@ -130,7 +130,19 @@ extends Dimension2D {
     public static PImmutableDimension getSharedFromWidthAndHeight(int width, int height) {
         // Primitive type int is 32 bits, and long is 64 bits.
         // Key: High 32 bits are for width; low are for height.
-        long key = ((long) width) << ((long) Integer.SIZE) | ((long) height);
+        // Ref: http://stackoverflow.com/questions/12772939/java-storing-two-ints-in-a-long
+        long high = ((long) width) << Integer.SIZE;
+        long low = ((long) height) & 0xffffffffL;
+        long key = high | low;
+//        System.out.println(String.format(
+//            "Key: (%d) 0x%08x -> 0x%016x | (%d) 0x%08x -> 0x%016x = 0x%016x",
+//            width,
+//            width,
+//            high,
+//            height,
+//            height,
+//            low,
+//            key));
         PImmutableDimension x = _cacheMap.get(key);
         if (null == x) {
             x = new PImmutableDimension(width, height);

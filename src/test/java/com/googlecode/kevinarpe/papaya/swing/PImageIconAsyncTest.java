@@ -37,18 +37,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.accessibility.AccessibleContext;
+
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.google.common.io.ByteStreams;
+import com.googlecode.kevinarpe.papaya.FuncUtils;
 import com.googlecode.kevinarpe.papaya.argument.PathArgsTest;
+import com.googlecode.kevinarpe.papaya.exception.ClassResourceNotFoundException;
 import com.googlecode.kevinarpe.papaya.exception.PathException;
 import com.googlecode.kevinarpe.papaya.swing.test.PSampleIcon;
 
 public class PImageIconAsyncTest {
-    
-    // TODO: Make sure test "flex" each constructor fully for *all* exceptions!
     
     private static final List<String> DESC_LIST =
         Collections.unmodifiableList(Arrays.asList(null, "", "   ", "abc", "東京から", "从重庆"));
@@ -159,6 +161,15 @@ public class PImageIconAsyncTest {
     throws IOException {
         new PImageIconAsync((InputStream) null);
     }
+
+    @Test(dataProvider = "_sample_Data",
+            expectedExceptions = IOException.class)
+    public void ctorInputStream_FailWithClosedInputStream(PSampleIcon x)
+    throws IOException {
+        InputStream in = new FileInputStream(x.filePath);
+        in.close();
+        new PImageIconAsync(in);
+    }
     
     ///////////////////////////////////////////////////////////////////////////
     // PImageIconAsync.ctor(Class, String, String)
@@ -190,6 +201,20 @@ public class PImageIconAsyncTest {
     throws IOException {
         new PImageIconAsync((Class<?>) null, (String) null, desc);
     }
+
+    @Test(dataProvider = "_desc_Data",
+            expectedExceptions = IllegalArgumentException.class)
+    public void ctorClassStringString_FailWithEmptyResourcePath(String desc)
+    throws IOException {
+        new PImageIconAsync(PImageIconAsyncTest.class, "", desc);
+    }
+
+    @Test(dataProvider = "_desc_Data",
+            expectedExceptions = ClassResourceNotFoundException.class)
+    public void ctorClassStringString_FailWithBadResourcePath(String desc)
+    throws IOException {
+        new PImageIconAsync(PImageIconAsyncTest.class, UUID.randomUUID().toString(), desc);
+    }
     
     ///////////////////////////////////////////////////////////////////////////
     // PImageIconAsync.ctor(Class, String)
@@ -218,6 +243,18 @@ public class PImageIconAsyncTest {
     public void ctorClassString_FailWithNull3()
     throws IOException {
         new PImageIconAsync((Class<?>) null, (String) null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void ctorClassString_FailWithEmptyResourcePath()
+    throws IOException {
+        new PImageIconAsync(PImageIconAsyncTest.class, "");
+    }
+
+    @Test(expectedExceptions = ClassResourceNotFoundException.class)
+    public void ctorClassString_FailWithBadResourcePath()
+    throws IOException {
+        new PImageIconAsync(PImageIconAsyncTest.class, UUID.randomUUID().toString());
     }
     
     ///////////////////////////////////////////////////////////////////////////
@@ -333,8 +370,9 @@ public class PImageIconAsyncTest {
     @Test(dataProvider = "_desc_Data")
     public void ctorStringString_FailWithPathnameNotExist(String desc)
     throws IOException {
+        File path = new File(UUID.randomUUID().toString());
         try {
-            new PImageIconAsync(UUID.randomUUID().toString(), desc);
+            new PImageIconAsync(path.getAbsolutePath(), desc);
         }
         catch (Exception e) {
             if (e instanceof PathException) {
@@ -393,8 +431,9 @@ public class PImageIconAsyncTest {
     @Test
     public void ctorString_FailWithPathnameNotExist()
     throws IOException {
+        File path = new File(UUID.randomUUID().toString());
         try {
-            new PImageIconAsync(UUID.randomUUID().toString());
+            new PImageIconAsync(path.getAbsoluteFile());
         }
         catch (Exception e) {
             if (e instanceof PathException) {
@@ -447,8 +486,9 @@ public class PImageIconAsyncTest {
     @Test(dataProvider = "_desc_Data")
     public void ctorFileString_FailWithPathnameNotExist(String desc)
     throws IOException {
+        File path = new File(UUID.randomUUID().toString());
         try {
-            new PImageIconAsync(new File(UUID.randomUUID().toString()), desc);
+            new PImageIconAsync(path.getAbsoluteFile(), desc);
         }
         catch (Exception e) {
             if (e instanceof PathException) {
@@ -500,8 +540,9 @@ public class PImageIconAsyncTest {
     @Test
     public void ctorFileString_FailWithPathnameNotExist()
     throws IOException {
+        File path = new File(UUID.randomUUID().toString());
         try {
-            new PImageIconAsync(new File(UUID.randomUUID().toString()));
+            new PImageIconAsync(path.getAbsoluteFile());
         }
         catch (Exception e) {
             if (e instanceof PathException) {
@@ -544,9 +585,9 @@ public class PImageIconAsyncTest {
         new PImageIconAsync(x.filePath.toURI().toURL(), desc);
     }
 
-    @Test(dataProvider = "_sampleAndDesc_Data",
+    @Test(dataProvider = "_desc_Data",
             expectedExceptions = NullPointerException.class)
-    public void ctorUrlString_FailWithNull(PSampleIcon x, String desc)
+    public void ctorUrlString_FailWithNull(String desc)
     throws IOException {
         new PImageIconAsync((URL) null, desc);
     }
@@ -600,5 +641,183 @@ public class PImageIconAsyncTest {
         Assert.assertEquals(a, b.value);
         Assert.assertEquals(b, b2);
         Assert.assertEquals(b, PMediaTrackerLoadStatus.COMPLETE);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.ignoreIconLoadErrors
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data")
+    public void ignoreIconLoadErrors_Pass(PSampleIcon x, String desc)
+    throws PathException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        boolean b = y.ignoreIconLoadErrors();
+        y.ignoreIconLoadErrors(b);
+        boolean b2 = y.ignoreIconLoadErrors();
+        Assert.assertEquals(b2, b);
+        y.ignoreIconLoadErrors(!b2);
+        b2 = y.ignoreIconLoadErrors();
+        Assert.assertEquals(b2, !b);
+        y.ignoreIconLoadErrors(!b2);
+        b2 = y.ignoreIconLoadErrors();
+        Assert.assertEquals(b2, b);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.getExpectedDimension/.setExpectedDimension
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data")
+    public void getSetExpectedDimension_Pass(PSampleIcon x, String desc)
+    throws PathException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        PImmutableDimension d = y.getExpectedDimension();
+        Assert.assertNull(d);
+        
+        y.setExpectedDimension(null);
+        d = y.getExpectedDimension();
+        Assert.assertNull(d);
+        
+        final int width = 17;
+        final int height = 31;
+        PImmutableDimension d2 = PImmutableDimension.getSharedFromWidthAndHeight(width, height);
+        y.setExpectedDimension(d2);
+        d = y.getExpectedDimension();
+        Assert.assertEquals(d, d2);
+        Assert.assertEquals(width, y.getIconWidth());
+        Assert.assertEquals(height, y.getIconHeight());
+        
+        final int width2 = 170;
+        final int height2 = 310;
+        PImmutableDimension d3 = PImmutableDimension.getSharedFromWidthAndHeight(width2, height2);
+        y.setExpectedDimension(d3);
+        d = y.getExpectedDimension();
+        Assert.assertEquals(d, d3);
+        Assert.assertEquals(width2, y.getIconWidth());
+        Assert.assertEquals(height2, y.getIconHeight());
+        
+        y.setExpectedDimension(null);
+        d = y.getExpectedDimension();
+        Assert.assertNull(d);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.waitForLoad
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data")
+    public void waitForLoad_Pass(PSampleIcon x, String desc)
+    throws PathException, InterruptedException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        
+        long timeoutMillis = 1;
+        PMediaTrackerLoadStatus s = y.waitForLoad(timeoutMillis);
+        PMediaTrackerLoadStatus s2 = y.waitForLoad(timeoutMillis);
+        PMediaTrackerLoadStatus s3 = y.waitForLoad(timeoutMillis);
+        if (s.isDone) {
+            Assert.assertEquals(s2, s);
+            Assert.assertEquals(s3, s);
+        }
+        PMediaTrackerLoadStatus s4 = y.waitForLoad();
+        Assert.assertTrue(s4.isDone);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.toString
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data")
+    public void toString_Pass(PSampleIcon x, String desc)
+    throws PathException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        String s = y.toString();
+        Assert.assertNotNull(s);
+        Assert.assertTrue(!s.isEmpty(), "!isEmpty");
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.getIconWidth/.getIconHeight
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data")
+    public void getIconWidthAndHeight_Pass(PSampleIcon x, String desc)
+    throws PathException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        Assert.assertEquals(y.getIconWidth(), x.imageDimension.width);
+        Assert.assertEquals(y.getIconHeight(), x.imageDimension.height);
+    }
+    
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void getIconWidth_FailWithEmptyFile()
+    throws IOException {
+        _FailWithEmptyFile(new FuncUtils.Func1<Void, PImageIconAsync>() {
+            @Override
+            public Void call(PImageIconAsync x) {
+                x.getIconWidth();
+                return null;
+            }
+        });
+    }
+    
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void getIconHeight_FailWithEmptyFile()
+    throws IOException {
+        _FailWithEmptyFile(new FuncUtils.Func1<Void, PImageIconAsync>() {
+            @Override
+            public Void call(PImageIconAsync x) {
+                x.getIconHeight();
+                return null;
+            }
+        });
+    }
+
+    private void _FailWithEmptyFile(FuncUtils.Func1<Void, PImageIconAsync> iconCallback)
+    throws IOException {
+        File path = new File(UUID.randomUUID().toString());
+        path.createNewFile();
+        PImageIconAsync y = new PImageIconAsync(path);
+        try {
+            iconCallback.call(y);
+        }
+        finally {
+            PathArgsTest.safeRm(path);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.paintIcon
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data",
+            expectedExceptions = IllegalStateException.class)
+    public void paintIcon_FailWithNonMatchingImageDimensions(PSampleIcon x, String desc)
+    throws PathException, InterruptedException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        y.setExpectedDimension(PImmutableDimension.getSharedFromWidthAndHeight(33333, 44444));
+        y.paintIcon(null, null, -1, -1);
+    }
+    
+    @Test(expectedExceptions = IllegalStateException.class)
+    public void paintIcon_FailWithEmptyFile()
+    throws IOException {
+        _FailWithEmptyFile(new FuncUtils.Func1<Void, PImageIconAsync>() {
+            @Override
+            public Void call(PImageIconAsync x) {
+                x.paintIcon(null, null, -1, -1);
+                return null;
+            }
+        });
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // PImageIconAsync.getAccessibleContext
+    //
+    
+    @Test(dataProvider = "_sampleAndDesc_Data")
+    public void getAccessibleContext_Pass(PSampleIcon x, String desc)
+    throws PathException {
+        PImageIconAsync y = new PImageIconAsync(x.filePath, desc);
+        AccessibleContext z = y.getAccessibleContext();
+        Assert.assertNotNull(z);
     }
 }

@@ -91,7 +91,7 @@ extends PThemeIconLoaderAbstractFixedDimension {
      *   <li>{@code getFixedDimension().description}</li>
      *   <ul>
      *     <li>{@link #getFixedDimension()}</li>
-     *     <li>{@link PImmutableDimension#description}</li>
+     *     <li>{@link PImmutableDimension#getDescription()}</li>
      *   </ul>
      *   <li>{@code name.context.dirName}</li>
      *   <ul>
