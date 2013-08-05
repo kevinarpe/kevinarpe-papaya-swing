@@ -25,7 +25,9 @@ package com.googlecode.kevinarpe.papaya.swing.widget;
  * #L%
  */
 
+import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -34,64 +36,62 @@ import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.swing.PHorizontalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.PJComponentTextParser;
 import com.googlecode.kevinarpe.papaya.swing.PVerticalAlignment;
-import com.googlecode.kevinarpe.papaya.swing.demo.PJLabelDemo;
 import com.googlecode.kevinarpe.papaya.swing.test.PDummyIconImpl;
-import com.googlecode.kevinarpe.papaya.swing.widget.defaults.PJLabelDefaults;
+import com.googlecode.kevinarpe.papaya.swing.widget.defaults.PAbstractButtonDefaults;
 
 /**
- * Extension of {@link JLabel}.
+ * Extension of {@link JCheckBox}.
  * <p>
  * <b>Label Text with Mnemonic Markers</b>
  * <p>
  * Many other GUI toolkits support mnemonic markers embedded in text to set keyboard shortcuts,
  * e.g., {@code "&Sample"} sets letter S as the keyboard shortcut character.  The method
  * {@link #setText(String)} incorporates the class {@link PJComponentTextParser} to enrich the text
- * label feature of {@code JLabel}.  It is also called by any constructor that accepts a
- * {@link String} parameter.
+ * label feature of {@code JCheckBox}.  It is also called by any constructor that accepts a
+ * {@link String} or {@link Action} parameter.
  * <p>
  * <b>{@link SwingConstants} vs. Enums</b>
  * <p>
  * As an alternative to the integer constants from interface {@link SwingConstants}, e.g.,
  * {@link SwingConstants#RIGHT}, two enums are used: {@link PHorizontalAlignment} and
- * {@link PVerticalAlignment}.  Parallel versions of existing constructors and methods exist for
- * these enums, such as:
+ * {@link PVerticalAlignment}.  Parallel versions of existing methods exist for these enums,
+ * such as:
  * <ul>
- *   <li>{@link #PJLabel(String, PHorizontalAlignment)}</li>
  *   <li>{@link #setHorizontalAlignment(PHorizontalAlignment)}</li>
  *   <li>{@link #getHorizontalAlignmentAsEnum()}</li>
  * </ul>
  * <p>
- * For a simple demo using this widget, see {@link PJLabelDemo}.
+ * For a simple demo using this widget, see {@link PJCheckBoxDemo}.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  * 
- * @see JLabel
+ * @see JCheckBox
  * @see #setText(String)
  */
 @FullyTested
 @SuppressWarnings("serial")
-public class PJLabel
-extends JLabel
+public class PJCheckBox
+extends JCheckBox
 implements PTextLabel {
     
     /**
-     * Defaults for {@link PJLabel} when the constructor uses a {@link String} and optionally an
+     * Defaults for {@link PJCheckBox} when the constructor uses a {@link String} and optionally an
      * {@link Icon}.
      */
-    public static final PJLabelDefaults DEFAULTS;
+    public static final PAbstractButtonDefaults DEFAULTS;
     
     /**
-     * Defaults for {@link PJLabel} when the constructor uses an {@link Icon}, but does not use a
-     * {@link String}.
+     * Defaults for {@link PJCheckBox} when the constructor uses an {@link Icon}, but does not use
+     * a {@link String}.
      */
-    public static final PJLabelDefaults DEFAULTS_FOR_ICON_ONLY;
+    public static final PAbstractButtonDefaults DEFAULTS_FOR_ICON_ONLY;
     
     static {
-        JLabel x = new JLabel();
-        DEFAULTS = new PJLabelDefaults(x);
+        JCheckBox x = new JCheckBox();
+        DEFAULTS = new PAbstractButtonDefaults(x);
         
-        JLabel y = new JLabel(PDummyIconImpl.INSTANCE);
-        DEFAULTS_FOR_ICON_ONLY = new PJLabelDefaults(y);
+        JCheckBox y = new JCheckBox(PDummyIconImpl.INSTANCE);
+        DEFAULTS_FOR_ICON_ONLY = new PAbstractButtonDefaults(y);
         
         @SuppressWarnings("unused")
         int dummy = 1;  // debug breakpoint
@@ -100,117 +100,95 @@ implements PTextLabel {
     private String _originalText;
 
     /**
-     * @see JLabel#JLabel()
+     * @see JCheckBox#JCheckBox()
      */
-    public PJLabel() {
+    public PJCheckBox() {
         super();
-        PJLabelInit(DEFAULTS.text);
+        PJCheckBoxInit(DEFAULTS.text);
     }
 
     /**
-     * @see JLabel#JLabel(Icon)
+     * @see JCheckBox#JCheckBox(Icon)
      */
-    public PJLabel(Icon image) {
-        super(image);
-        PJLabelInit(DEFAULTS_FOR_ICON_ONLY.text);
+    public PJCheckBox(Icon icon) {
+        super(icon);
+        PJCheckBoxInit(DEFAULTS_FOR_ICON_ONLY.text);
     }
 
     /**
-     * It is better to use {@link #PJLabel(Icon, PHorizontalAlignment)}.
-     */
-    public PJLabel(Icon image, int horizontalAlignment) {
-        super(image, horizontalAlignment);
-        PJLabelInit(DEFAULTS_FOR_ICON_ONLY.text);
-    }
-
-    /**
-     * @throws NullPointerException
-     *         if {@code horizontalAlignment} is {@code null}
-     * 
-     * @see JLabel#JLabel(Icon, int)
-     */
-    public PJLabel(Icon image, PHorizontalAlignment horizontalAlignment) {
-        super(
-            image,
-            ObjectArgs.checkNotNull(horizontalAlignment, "horizontalAlignment").value);
-        PJLabelInit(DEFAULTS_FOR_ICON_ONLY.text);
-    }
-
-    /**
-     * @see JLabel#JLabel(String)
+     * @see JCheckBox#JCheckBox(String)
      * @see #setText(String)
      */
-    public PJLabel(String text) {
+    public PJCheckBox(String text) {
         super(text);
-        PJLabelInit(text);
+        PJCheckBoxInit(_originalText);
     }
 
     /**
-     * It is better to use {@link #PJLabel(String, PHorizontalAlignment)}.
-     */
-    public PJLabel(String text, int horizontalAlignment) {
-        super(text, horizontalAlignment);
-        PJLabelInit(text);
-    }
-
-    /**
-     * @throws NullPointerException
-     *         if {@code horizontalAlignment} is {@code null}
-     * 
-     * @see JLabel#JLabel(String, int)
+     * @see JCheckBox#JCheckBox(Action)
      * @see #setText(String)
      */
-    public PJLabel(String text, PHorizontalAlignment horizontalAlignment) {
-        super(
-            text,
-            ObjectArgs.checkNotNull(horizontalAlignment, "horizontalAlignment").value);
-        PJLabelInit(text);
+    public PJCheckBox(Action a) {
+        super(a);
+        PJCheckBoxInit(_originalText);
     }
 
     /**
-     * It is better to use {@link #PJLabel(String, Icon, PHorizontalAlignment)}.
+     * @see JCheckBox#JCheckBox(Icon, boolean)
      */
-    public PJLabel(String text, Icon icon, int horizontalAlignment) {
-        super(text, icon, horizontalAlignment);
-        PJLabelInit(text);
+    public PJCheckBox(Icon icon, boolean selected) {
+        super(icon, selected);
+        PJCheckBoxInit(DEFAULTS_FOR_ICON_ONLY.text);
     }
 
     /**
-     * @throws NullPointerException
-     *         if {@code horizontalAlignment} is {@code null}
-     * 
-     * @see JLabel#JLabel(String, Icon, int)
+     * @see JCheckBox#JCheckBox(String, boolean)
      * @see #setText(String)
      */
-    public PJLabel(String text, Icon icon, PHorizontalAlignment horizontalAlignment) {
-        super(
-            text,
-            icon,
-            ObjectArgs.checkNotNull(horizontalAlignment, "horizontalAlignment").value);
-        PJLabelInit(text);
+    public PJCheckBox(String text, boolean selected) {
+        super(text, selected);
+        PJCheckBoxInit(_originalText);
     }
-    
+
+    /**
+     * @see JCheckBox#JCheckBox(String, Icon)
+     * @see #setText(String)
+     */
+    public PJCheckBox(String text, Icon icon) {
+        super(text, icon);
+        PJCheckBoxInit(_originalText);
+    }
+
+    /**
+     * @see JCheckBox#JCheckBox(String, Icon, boolean)
+     * @see #setText(String)
+     */
+    public PJCheckBox(String text, Icon icon, boolean selected) {
+        super(text, icon, selected);
+        PJCheckBoxInit(_originalText);
+    }
+
     /**
      * Called by all constructors.
      */
-    protected void PJLabelInit(String optText) {
+    protected void PJCheckBoxInit(String optText) {
         setOriginalText(optText);
     }
-
+    
     /**
-     * Sets the text for this label that may include a mnemonic character marker (&) or HTML
+     * Sets the text for this checkbox that may include a mnemonic character marker (&) or HTML
      * markup.  Read more here: {@link PJComponentTextParser}.  To access the original text passed
      * to this method, see {@link #getOriginalText()}.
      * <p>
-     * Methods {@link #setDisplayedMnemonic(int)} and {@link #setDisplayedMnemonicIndex(int)} are
-     * also called by this method.
+     * Methods {@link #setMnemonic(int)} and {@link #setDisplayedMnemonicIndex(int)} are also
+     * called by this method.
      * <hr>
-     * Docs from {@link JLabel#setText(String)}:
+     * Docs from {@link JCheckBox#setText(String)}:
      * <p>
      * {@inheritDoc}
      * 
      * @see PJComponentTextParser
-     * @see #setDisplayedMnemonic(int)
+     * @see #setMnemonic(int)
      * @see #setDisplayedMnemonicIndex(int)
      * @see #getOriginalText()
      */
@@ -219,7 +197,7 @@ implements PTextLabel {
         PJComponentTextParser x = new PJComponentTextParser(text);
         setOriginalText(text);
         super.setText(x.textAfterParse);
-        setDisplayedMnemonic(x.mnemonicKeyCode);
+        setMnemonic(x.mnemonicKeyCode);
         setDisplayedMnemonicIndex(x.mnemonicIndex);
     }
     
@@ -416,22 +394,5 @@ implements PTextLabel {
         int x = getVerticalTextPosition();
         PVerticalAlignment y = PVerticalAlignment.valueOf(x);
         return y;
-    }
-
-    /**
-     * @see #getDisplayedMnemonic()
-     */
-    @Override
-    public int getMnemonic() {
-        int x = this.getDisplayedMnemonic();
-        return x;
-    }
-
-    /**
-     * @see #setDisplayedMnemonic(int)
-     */
-    @Override
-    public void setMnemonic(int virtualKeyCode) {
-        this.setDisplayedMnemonic(virtualKeyCode);
     }
 }

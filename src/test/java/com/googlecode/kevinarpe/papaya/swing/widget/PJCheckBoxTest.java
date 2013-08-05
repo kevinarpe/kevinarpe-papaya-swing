@@ -26,8 +26,8 @@ package com.googlecode.kevinarpe.papaya.swing.widget;
  */
 
 import javax.swing.Icon;
-import junit.framework.Assert;
 
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -35,7 +35,7 @@ import com.googlecode.kevinarpe.papaya.swing.PHorizontalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.PVerticalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.test.PDummyIconImpl;
 
-public class PJLabelTest {
+public class PJCheckBoxTest {
     
     @DataProvider
     private static final Object[][] _setText_Pass_Data() {
@@ -43,91 +43,49 @@ public class PJLabelTest {
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(<empty>)
+    // PJCheckBox.ctor(<empty>)
     //
 
     @Test
     public void ctorEmpty_Pass() {
-        PJLabel x = new PJLabel();
-        PTextLabelTest.checkBasicAttrs(
+        PJCheckBox x = new PJCheckBox();
+        checkBasicAttrs(
             x,
-            PJLabel.DEFAULTS.text,
-            PJLabel.DEFAULTS.text,
-            PJLabel.DEFAULTS.displayedMnemonicKeyCode,
-            PJLabel.DEFAULTS.displayedMnemonicIndex,
+            PJCheckBox.DEFAULTS.text,
+            PJCheckBox.DEFAULTS.text,
+            PJCheckBox.DEFAULTS.mnemonicKeyCode,
+            PJCheckBox.DEFAULTS.displayedMnemonicIndex,
             (Icon) null,
-            PJLabel.DEFAULTS.horizontalAlignment,
-            PJLabel.DEFAULTS.verticalAlignment,
-            PJLabel.DEFAULTS.horizontalTextPosition,
-            PJLabel.DEFAULTS.verticalTextPosition);
+            PJCheckBox.DEFAULTS.horizontalAlignment,
+            PJCheckBox.DEFAULTS.verticalAlignment,
+            PJCheckBox.DEFAULTS.horizontalTextPosition,
+            PJCheckBox.DEFAULTS.verticalTextPosition,
+            PJCheckBox.DEFAULTS.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(Icon)
+    // PJCheckBox.ctor(Icon)
     //
 
     @Test
     public void ctorIcon_Pass() {
-        PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE);
-        PTextLabelTest.checkBasicAttrs(
+        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        checkBasicAttrs(
             x,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.text,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.text,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicKeyCode,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.mnemonicKeyCode,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
             PDummyIconImpl.INSTANCE,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
-            PJLabel.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition);
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition,
+            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(Icon, int)
-    //
-
-    @Test
-    public void ctorIconInt_Pass() {
-        for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
-            PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE, halign.value);
-            PTextLabelTest.checkBasicAttrs(
-                x,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.text,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.text,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicKeyCode,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
-                PDummyIconImpl.INSTANCE,
-                halign,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition);
-        }
-    }
-    
-    ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(Icon, PHorizontalAlignment)
-    //
-
-    @Test
-    public void ctorIconPHorizontalAlignment_Pass() {
-        for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
-            PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE, halign);
-            PTextLabelTest.checkBasicAttrs(
-                x,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.text,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.text,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicKeyCode,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
-                PDummyIconImpl.INSTANCE,
-                halign,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
-                PJLabel.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition);
-        }
-    }
-    
-    ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(String)
+    // PJCheckBox.ctor(String)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -136,126 +94,153 @@ public class PJLabelTest {
             String textAfterParse,
             int mnemonicKeyCode,
             int mnemonicIndex) {
-        PJLabel x = new PJLabel(textBeforeParse);
+        PJCheckBox x = new PJCheckBox(textBeforeParse);
+        checkBasicAttrs(
+            x,
+            textBeforeParse,
+            (null == textAfterParse ? "" : textAfterParse),
+            mnemonicKeyCode,
+            mnemonicIndex,
+            (Icon) null,
+            PJCheckBox.DEFAULTS.horizontalAlignment,
+            PJCheckBox.DEFAULTS.verticalAlignment,
+            PJCheckBox.DEFAULTS.horizontalTextPosition,
+            PJCheckBox.DEFAULTS.verticalTextPosition,
+            PJCheckBox.DEFAULTS.isSelected);
+    }
+    
+    // TODO: Action ctor
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PJCheckBox.ctor(Icon, boolean)
+    //
+
+    @Test
+    public void ctorIconBoolean_Pass() {
+        for (boolean isSelected: new boolean[] { true, false }) {
+            PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE, isSelected);
+            checkBasicAttrs(
+                x,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.mnemonicKeyCode,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
+                PDummyIconImpl.INSTANCE,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
+                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition,
+                isSelected);
+        }
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PJCheckBox.ctor(String, boolean)
+    //
+    
+    @Test(dataProvider = "_setText_Pass_Data")
+    public void ctorStringBoolean_Pass(
+            String textBeforeParse,
+            String textAfterParse,
+            int mnemonicKeyCode,
+            int mnemonicIndex) {
+        for (boolean isSelected: new boolean[] { true, false }) {
+            PJCheckBox x = new PJCheckBox(textBeforeParse, isSelected);
+            checkBasicAttrs(
+                x,
+                textBeforeParse,
+                (null == textAfterParse ? "" : textAfterParse),
+                mnemonicKeyCode,
+                mnemonicIndex,
+                (Icon) null,
+                PJCheckBox.DEFAULTS.horizontalAlignment,
+                PJCheckBox.DEFAULTS.verticalAlignment,
+                PJCheckBox.DEFAULTS.horizontalTextPosition,
+                PJCheckBox.DEFAULTS.verticalTextPosition,
+                isSelected);
+        }
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PJCheckBox.ctor(String, Icon)
+    //
+    
+    @Test(dataProvider = "_setText_Pass_Data")
+    public void ctorStringIcon_Pass(
+            String textBeforeParse,
+            String textAfterParse,
+            int mnemonicKeyCode,
+            int mnemonicIndex) {
+        PJCheckBox x = new PJCheckBox(textBeforeParse, PDummyIconImpl.INSTANCE);
+        checkBasicAttrs(
+            x,
+            textBeforeParse,
+            (null == textAfterParse ? "" : textAfterParse),
+            mnemonicKeyCode,
+            mnemonicIndex,
+            PDummyIconImpl.INSTANCE,
+            PJCheckBox.DEFAULTS.horizontalAlignment,
+            PJCheckBox.DEFAULTS.verticalAlignment,
+            PJCheckBox.DEFAULTS.horizontalTextPosition,
+            PJCheckBox.DEFAULTS.verticalTextPosition,
+            PJCheckBox.DEFAULTS.isSelected);
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // PJCheckBox.ctor(String, Icon, boolean)
+    //
+    
+    @Test(dataProvider = "_setText_Pass_Data")
+    public void ctorStringIconBoolean_Pass(
+            String textBeforeParse,
+            String textAfterParse,
+            int mnemonicKeyCode,
+            int mnemonicIndex) {
+        for (boolean isSelected: new boolean[] { true, false }) {
+            PJCheckBox x = new PJCheckBox(textBeforeParse, PDummyIconImpl.INSTANCE, isSelected);
+            checkBasicAttrs(
+                x,
+                textBeforeParse,
+                (null == textAfterParse ? "" : textAfterParse),
+                mnemonicKeyCode,
+                mnemonicIndex,
+                PDummyIconImpl.INSTANCE,
+                PJCheckBox.DEFAULTS.horizontalAlignment,
+                PJCheckBox.DEFAULTS.verticalAlignment,
+                PJCheckBox.DEFAULTS.horizontalTextPosition,
+                PJCheckBox.DEFAULTS.verticalTextPosition,
+                isSelected);
+        }
+    }
+    
+    public static void checkBasicAttrs(
+            PTextLabel x,
+            String textBeforeParse,
+            String textAfterParse,
+            int mnemonicKeyCode,
+            int mnemonicIndex,
+            Icon image,
+            PHorizontalAlignment halign,
+            PVerticalAlignment valign,
+            PHorizontalAlignment htextPos,
+            PVerticalAlignment vtextPos,
+            boolean isSelected) {
         PTextLabelTest.checkBasicAttrs(
             x,
             textBeforeParse,
             textAfterParse,
             mnemonicKeyCode,
             mnemonicIndex,
-            (Icon) null,
-            PJLabel.DEFAULTS.horizontalAlignment,
-            PJLabel.DEFAULTS.verticalAlignment,
-            PJLabel.DEFAULTS.horizontalTextPosition,
-            PJLabel.DEFAULTS.verticalTextPosition);
+            image,
+            halign,
+            valign,
+            htextPos,
+            vtextPos);
+        
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(String, int)
-    //
-    
-    @Test(dataProvider = "_setText_Pass_Data")
-    public void ctorStringInt_Pass(
-            String textBeforeParse,
-            String textAfterParse,
-            int mnemonicKeyCode,
-            int mnemonicIndex) {
-        for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
-            PJLabel x = new PJLabel(textBeforeParse, halign.value);
-            PTextLabelTest.checkBasicAttrs(
-                x,
-                textBeforeParse,
-                textAfterParse,
-                mnemonicKeyCode,
-                mnemonicIndex,
-                (Icon) null,
-                halign,
-                PJLabel.DEFAULTS.verticalAlignment,
-                PJLabel.DEFAULTS.horizontalTextPosition,
-                PJLabel.DEFAULTS.verticalTextPosition);
-        }
-    }
-    
-    ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(String, PHorizontalAlignment)
-    //
-    
-    @Test(dataProvider = "_setText_Pass_Data")
-    public void ctorStringPHorizontalAlignment_Pass(
-            String textBeforeParse,
-            String textAfterParse,
-            int mnemonicKeyCode,
-            int mnemonicIndex) {
-        for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
-            PJLabel x = new PJLabel(textBeforeParse, halign);
-            PTextLabelTest.checkBasicAttrs(
-                x,
-                textBeforeParse,
-                textAfterParse,
-                mnemonicKeyCode,
-                mnemonicIndex,
-                (Icon) null,
-                halign,
-                PJLabel.DEFAULTS.verticalAlignment,
-                PJLabel.DEFAULTS.horizontalTextPosition,
-                PJLabel.DEFAULTS.verticalTextPosition);
-        }
-    }
-    
-    ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(String, Icon, int)
-    //
-    
-    @Test(dataProvider = "_setText_Pass_Data")
-    public void ctorStringIconInt_Pass(
-            String textBeforeParse,
-            String textAfterParse,
-            int mnemonicKeyCode,
-            int mnemonicIndex) {
-        for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
-            PJLabel x = new PJLabel(textBeforeParse, PDummyIconImpl.INSTANCE, halign.value);
-            PTextLabelTest.checkBasicAttrs(
-                x,
-                textBeforeParse,
-                textAfterParse,
-                mnemonicKeyCode,
-                mnemonicIndex,
-                PDummyIconImpl.INSTANCE,
-                halign,
-                PJLabel.DEFAULTS.verticalAlignment,
-                PJLabel.DEFAULTS.horizontalTextPosition,
-                PJLabel.DEFAULTS.verticalTextPosition);
-        }
-    }
-    
-    ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.ctor(String, Icon, PHorizontalAlignment)
-    //
-    
-    @Test(dataProvider = "_setText_Pass_Data")
-    public void ctorStringIconPHorizontalAlignment_Pass(
-            String textBeforeParse,
-            String textAfterParse,
-            int mnemonicKeyCode,
-            int mnemonicIndex) {
-        for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
-            PJLabel x = new PJLabel(textBeforeParse, PDummyIconImpl.INSTANCE, halign);
-            PTextLabelTest.checkBasicAttrs(
-                x,
-                textBeforeParse,
-                textAfterParse,
-                mnemonicKeyCode,
-                mnemonicIndex,
-                PDummyIconImpl.INSTANCE,
-                halign,
-                PJLabel.DEFAULTS.verticalAlignment,
-                PJLabel.DEFAULTS.horizontalTextPosition,
-                PJLabel.DEFAULTS.verticalTextPosition);
-        }
-    }
-    
-    ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.setText(String)
+    // PJCheckBox.setText(String)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -264,25 +249,26 @@ public class PJLabelTest {
             String textAfterParse,
             int mnemonicKeyCode,
             int mnemonicIndex) {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         x.setText(textBeforeParse);
-        PTextLabelTest.coreSetText_Pass(x, textBeforeParse, textAfterParse, mnemonicKeyCode, mnemonicIndex);
+        PTextLabelTest.coreSetText_Pass(
+            x, textBeforeParse, textAfterParse, mnemonicKeyCode, mnemonicIndex);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.setHorizontalAlignment(PHorizontalAlignment)/.getHorizontalAlignmentAsEnum()
+    // PJCheckBox.setHorizontalAlignment(PHorizontalAlignment)/.getHorizontalAlignmentAsEnum()
     //
     
     @Test
     public void setHorizontalAlignment_Pass() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         _setHorizontalAlignment_Pass(x);
         
-        PJLabel y = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
         _setHorizontalAlignment_Pass(y);
     }
     
-    public void _setHorizontalAlignment_Pass(PJLabel x) {
+    public void _setHorizontalAlignment_Pass(PJCheckBox x) {
         for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
             x.setHorizontalAlignment(halign);
             Assert.assertEquals(x.getHorizontalAlignment(), halign.value);
@@ -292,30 +278,30 @@ public class PJLabelTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalAlignment_FailWithNull() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         x.setHorizontalAlignment((PHorizontalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalAlignment_FailWithNull2() {
-        PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
         x.setHorizontalAlignment((PHorizontalAlignment) null);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.setVerticalAlignment(PVerticalAlignment)/.getVerticalAlignmentAsEnum()
+    // PJCheckBox.setVerticalAlignment(PVerticalAlignment)/.getVerticalAlignmentAsEnum()
     //
     
     @Test
     public void setVerticalAlignment_Pass() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         _setVerticalAlignment_Pass(x);
         
-        PJLabel y = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
         _setVerticalAlignment_Pass(y);
     }
     
-    public void _setVerticalAlignment_Pass(PJLabel x) {
+    public void _setVerticalAlignment_Pass(PJCheckBox x) {
         for (PVerticalAlignment halign: PVerticalAlignment.values()) {
             x.setVerticalAlignment(halign);
             Assert.assertEquals(x.getVerticalAlignment(), halign.value);
@@ -325,30 +311,30 @@ public class PJLabelTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalAlignment_FailWithNull() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         x.setVerticalAlignment((PVerticalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalAlignment_FailWithNull2() {
-        PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
         x.setVerticalAlignment((PVerticalAlignment) null);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.setHorizontalTextPosition(PHorizontalAlignment)/.getHorizontalTextPositionAsEnum()
+    // PJCheckBox.setHorizontalTextPosition(PHorizontalAlignment)/.getHorizontalTextPositionAsEnum()
     //
     
     @Test
     public void setHorizontalTextPosition_Pass() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         _setHorizontalTextPosition_Pass(x);
         
-        PJLabel y = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
         _setHorizontalTextPosition_Pass(y);
     }
     
-    public void _setHorizontalTextPosition_Pass(PJLabel x) {
+    public void _setHorizontalTextPosition_Pass(PJCheckBox x) {
         for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
             x.setHorizontalTextPosition(halign);
             Assert.assertEquals(x.getHorizontalTextPosition(), halign.value);
@@ -358,30 +344,30 @@ public class PJLabelTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalTextPosition_FailWithNull() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         x.setHorizontalTextPosition((PHorizontalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalTextPosition_FailWithNull2() {
-        PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
         x.setHorizontalTextPosition((PHorizontalAlignment) null);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJLabel.setVerticalTextPosition(PVerticalAlignment)/.getVerticalTextPositionAsEnum()
+    // PJCheckBox.setVerticalTextPosition(PVerticalAlignment)/.getVerticalTextPositionAsEnum()
     //
     
     @Test
     public void setVerticalTextPosition_Pass() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         _setVerticalTextPosition_Pass(x);
         
-        PJLabel y = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
         _setVerticalTextPosition_Pass(y);
     }
     
-    public void _setVerticalTextPosition_Pass(PJLabel x) {
+    public void _setVerticalTextPosition_Pass(PJCheckBox x) {
         for (PVerticalAlignment halign: PVerticalAlignment.values()) {
             x.setVerticalTextPosition(halign);
             Assert.assertEquals(x.getVerticalTextPosition(), halign.value);
@@ -391,13 +377,13 @@ public class PJLabelTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalTextPosition_FailWithNull() {
-        PJLabel x = new PJLabel();
+        PJCheckBox x = new PJCheckBox();
         x.setVerticalTextPosition((PVerticalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalTextPosition_FailWithNull2() {
-        PJLabel x = new PJLabel(PDummyIconImpl.INSTANCE);
+        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
         x.setVerticalTextPosition((PVerticalAlignment) null);
     }
 }

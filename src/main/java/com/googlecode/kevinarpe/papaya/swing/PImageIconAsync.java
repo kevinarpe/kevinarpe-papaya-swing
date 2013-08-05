@@ -103,7 +103,7 @@ extends ImageIcon {
      */
     public PImageIconAsync() {
         super();
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
         _mediaTrackerId = -1;
         _imageLoadStatus = PMediaTrackerLoadStatus.INITIAL;
         setIconWidth(DEFAULT_WIDTH);
@@ -156,6 +156,7 @@ extends ImageIcon {
     public PImageIconAsync(InputStream in)
     throws IOException {
         super(ByteStreams.toByteArray(ObjectArgs.checkNotNull(in, "in")));
+        PImageIconAsyncInit();
     }
     
     /**
@@ -233,7 +234,7 @@ extends ImageIcon {
         super(
             ObjectArgs.checkNotNull(imageData, "imageData"),
             optDescription);
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
 
     /**
@@ -244,7 +245,7 @@ extends ImageIcon {
      */
     public PImageIconAsync(byte[] imageData) {
         super(ObjectArgs.checkNotNull(imageData, "imageData"));
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
 
     /**
@@ -259,7 +260,7 @@ extends ImageIcon {
         super(
             ObjectArgs.checkNotNull(image, "image"),
             optDescription);
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
 
     /**
@@ -270,7 +271,7 @@ extends ImageIcon {
      */
     public PImageIconAsync(Image image) {
         super(ObjectArgs.checkNotNull(image, "image"));
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
 
     /**
@@ -314,7 +315,7 @@ extends ImageIcon {
     public PImageIconAsync(String pathname)
     throws PathException {
         super(PathArgs.checkFileExists(pathname, "pathname").getAbsolutePath());
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
     
     /**
@@ -360,7 +361,7 @@ extends ImageIcon {
     public PImageIconAsync(File path)
     throws PathException {
         super(PathArgs.checkFileExists(path, "path").getAbsolutePath());
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
 
     /**
@@ -375,7 +376,7 @@ extends ImageIcon {
         super(
             ObjectArgs.checkNotNull(location, "location"),
             optDescription);
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
 
     /**
@@ -386,13 +387,13 @@ extends ImageIcon {
      */
     public PImageIconAsync(URL location) {
         super(ObjectArgs.checkNotNull(location, "location"));
-        PImageIconAsync_init();
+        PImageIconAsyncInit();
     }
     
     /**
      * Called by all constructors.
      */
-    protected void PImageIconAsync_init() {
+    protected void PImageIconAsyncInit() {
         _ignoreIconLoadErrors = DEFAULT_IGNORE_ICON_LOAD_ERRORS;
     }
     

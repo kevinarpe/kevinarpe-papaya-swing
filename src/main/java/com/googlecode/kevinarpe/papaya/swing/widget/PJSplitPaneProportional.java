@@ -196,6 +196,7 @@ extends JSplitPane {
      * This method is called indirectly by all constructors.  Exercise care when overriding.
      */
     protected void PJSplitPaneInit() {
+        setDividerLocation(DEFAULT_PROPORTIONAL_LOCATION);
         _compListener = createInnerComponentListener();
         addComponentListener(_compListener);
         
@@ -212,12 +213,20 @@ extends JSplitPane {
         }
         _debugLogger = PSwingDebug.getLogger(PJSplitPaneProportional.class);
     }
+    
+    /**
+     * Initial value for {@link #getDividerProportionalLocation()}: 1/3
+     */
+    public static final double DEFAULT_PROPORTIONAL_LOCATION = 1.0d / 3.0d;
 
-    private double _proportionalLocation = 1.0d / 3.0d;
+    private double _proportionalLocation;
     
     /**
      * Retrieves the proportional location for the divider.  This is between the inclusive range of
-     * 0.0 to 1.0 (0% -> 100%).
+     * 0.0 to 1.0 (0% -> 100%).  A value of 0.25 indicates the left or top component will have 25%
+     * of the visible space, and the right or bottom will have 75%.
+     * <p>
+     * The default value is {@link #DEFAULT_PROPORTIONAL_LOCATION}.
      */
     public double getDividerProportionalLocation() {
         return _proportionalLocation;
@@ -244,6 +253,7 @@ extends JSplitPane {
      */
     @Override
     public void setDividerLocation(final double proportionalLocation) {
+        setDividerProportionalLocation(proportionalLocation);
         if (PSwingUtils.isComponentShowing(this)) {
             setDividerLocationCore(proportionalLocation);
         }
@@ -286,7 +296,7 @@ extends JSplitPane {
                 orient, JSplitPane.HORIZONTAL_SPLIT, JSplitPane.VERTICAL_SPLIT));
         }
         super.setDividerLocation(newLocation);
-        setDividerProportionalLocation(proportionalLocation);
+//        setDividerProportionalLocation(proportionalLocation);
         _debugLogger.debug("setDividerLocation(double):END");
     }
     
