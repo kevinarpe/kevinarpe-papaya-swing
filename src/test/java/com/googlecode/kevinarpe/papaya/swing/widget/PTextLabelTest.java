@@ -194,6 +194,15 @@ public class PTextLabelTest {
         };
     }
     
+    /**
+Action.MNEMONIC_KEY: setMnemonic(int)
+Action.NAME: setText(String)
+Action.SHORT_DESCRIPTION: setToolTipText(String)
+Action.ACTION_COMMAND_KEY -> setActionCommand(String)
+isEnabled() -> setEnabled(boolean)
+Action.SELECTED_KEY -> setSelected(boolean)
+Action.DISPLAYED_MNEMONIC_INDEX_KEY -> setDisplayedMnemonicIndex(int)
+     */
     @SuppressWarnings("serial")
     public static class SampleAction
     extends AbstractAction {

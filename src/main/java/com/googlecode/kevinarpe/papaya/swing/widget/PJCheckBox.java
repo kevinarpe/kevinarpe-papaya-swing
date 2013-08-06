@@ -35,6 +35,9 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.swing.PHorizontalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.PJComponentTextParser;
+import com.googlecode.kevinarpe.papaya.swing.PJComponentToolTipTextParser;
+import com.googlecode.kevinarpe.papaya.swing.PJComponentUtils;
+import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
 import com.googlecode.kevinarpe.papaya.swing.PVerticalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.test.PDummyIconImpl;
 import com.googlecode.kevinarpe.papaya.swing.widget.defaults.PAbstractButtonDefaults;
@@ -402,5 +405,73 @@ implements PTextLabel {
         int x = getVerticalTextPosition();
         PVerticalAlignment y = PVerticalAlignment.valueOf(x);
         return y;
+    }
+
+    // TODO: Expand these methods to other classes.
+    // TODO: Maybe getOriginalText() is useless.
+    // getText() should ALWAYS return what was given to setText()
+    // ... however, super.getText() may return processed text.
+    // Same for ToolTipText
+    
+    private String _originalToolTipText;
+    
+    @Override
+    public void setToolTipText(String optText) {
+        PJComponentToolTipTextParser x = new PJComponentToolTipTextParser(this, optText);
+        super.setToolTipText(x.textAfterParse);
+        _originalToolTipText = optText;
+    }
+    
+    // TODO: Upgrade PJComponentTextParser to use HTML_DISABLE ClientProperty correctly.
+    
+    @Override
+    public String getToolTipText() {
+        // TODO: Get the default right.
+        return _originalToolTipText;
+    }
+    
+    public void setHtmlDisabled(boolean flag) {
+        PJComponentUtils.setHtmlDisabled(this, flag);
+    }
+    
+    public boolean isHtmlDisabled() {
+        boolean x = PJComponentUtils.isHtmlDisabled(this);
+        return x;
+    }
+    
+    @Override
+    public boolean requestFocusInWindow() {
+        if (PSwingUtils.isComponentShowing(this)) {
+            boolean x = super.requestFocusInWindow();
+            return x;
+        }
+        else {
+            final PJCheckBox self = this;
+            PSwingUtils.runAfterNextShow(this, new Runnable() {
+                public void run() {
+                    @SuppressWarnings("unused")
+                    boolean x = self.requestFocusInWindow();
+                }
+            });
+            return true;
+        }
+    }
+    
+    public void doClickAsync() {
+        final PJCheckBox self = this;
+        PSwingUtils.runAfterNextShow(this, new Runnable() {
+            public void run() {
+                self.doClick();
+            }
+        });
+    }
+    
+    public void doClickAsync(final int pressTimeMillis) {
+        final PJCheckBox self = this;
+        PSwingUtils.runAfterNextShow(this, new Runnable() {
+            public void run() {
+                self.doClick(pressTimeMillis);
+            }
+        });
     }
 }

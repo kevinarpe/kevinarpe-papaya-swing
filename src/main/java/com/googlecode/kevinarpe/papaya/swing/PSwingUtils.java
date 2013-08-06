@@ -132,7 +132,7 @@ public final class PSwingUtils {
      *   {@link #isComponentShowing(Component)}.</li>
      *   <li>The term "next" is applied strictly: If the component is showing when this method is
      *   called, the code will not run until the widget is hidden, then shown again.  The method
-     *   {@link #runIfShowingOrAfterNextShow(Component, Runnable)} exists to handle this
+     *   {@link #invokeLaterIfShowingOrRunAfterNextShow(Component, Runnable)} exists to handle this
      *   issue.</li>
      * </ul>
      * 
@@ -145,7 +145,7 @@ public final class PSwingUtils {
      *         if {@code comp} or {@code run} is {@code null}
      * 
      * @see #isComponentShowing(Component)
-     * @see #runIfShowingOrAfterNextShow(Component, Runnable)
+     * @see #invokeLaterIfShowingOrRunAfterNextShow(Component, Runnable)
      */
     public static void runAfterNextShow(final Component comp, final Runnable run) {
         ObjectArgs.checkNotNull(comp, "comp");
@@ -255,17 +255,31 @@ public final class PSwingUtils {
      * @see #isComponentShowing(Component)
      * @see #runAfterNextShow(Component, Runnable)
      */
-    public static boolean runIfShowingOrAfterNextShow(Component comp, Runnable run) {
-        ObjectArgs.checkNotNull(comp, "comp");
-        ObjectArgs.checkNotNull(run, "run");
-        
-        if (isComponentShowing(comp)) {
-            SwingUtilities.invokeLater(run);
-            return true;
-        }
-        else {
-            runAfterNextShow(comp, run);
-            return false;
-        }
-    }
+//    public static boolean invokeLaterIfShowingOrRunAfterNextShow(Component comp, Runnable run) {
+//        ObjectArgs.checkNotNull(comp, "comp");
+//        ObjectArgs.checkNotNull(run, "run");
+//        
+//        if (isComponentShowing(comp)) {
+//            SwingUtilities.invokeLater(run);
+//            return true;
+//        }
+//        else {
+//            runAfterNextShow(comp, run);
+//            return false;
+//        }
+//    }
+//    
+//    public static boolean runNowIfShowingOrRunAfterNextShow(Component comp, Runnable run) {
+//        ObjectArgs.checkNotNull(comp, "comp");
+//        ObjectArgs.checkNotNull(run, "run");
+//        
+//        if (isComponentShowing(comp)) {
+//            run.run();
+//            return true;
+//        }
+//        else {
+//            runAfterNextShow(comp, run);
+//            return false;
+//        }
+//    }
 }
