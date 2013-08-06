@@ -27,8 +27,8 @@ package com.googlecode.kevinarpe.papaya.swing.widget;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
 import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
@@ -40,7 +40,7 @@ import com.googlecode.kevinarpe.papaya.swing.test.PDummyIconImpl;
 import com.googlecode.kevinarpe.papaya.swing.widget.defaults.PAbstractButtonDefaults;
 
 /**
- * Extension of {@link JCheckBox}.
+ * Extension of {@link JRadioButton}.
  * <p>
  * <b>Label Text with Mnemonic Markers</b>
  * <p>
@@ -61,44 +61,44 @@ import com.googlecode.kevinarpe.papaya.swing.widget.defaults.PAbstractButtonDefa
  *   <li>{@link #getHorizontalAlignmentAsEnum()}</li>
  * </ul>
  * <p>
- * For a simple demo using this widget, see {@link PJCheckBoxDemo}.
+ * For a simple demo using this widget, see {@link PJRadioButtonDemo}.
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
  * 
- * @see JCheckBox
+ * @see JRadioButton
  * @see #setText(String)
  */
 @FullyTested
 @SuppressWarnings("serial")
-public class PJCheckBox
-extends JCheckBox
+public class PJRadioButton
+extends JRadioButton
 implements PTextLabel {
     
     /**
-     * Defaults for {@link PJCheckBox} when the constructor uses a {@link String} and optionally an
-     * {@link Icon}.
+     * Defaults for {@link PJRadioButton} when the constructor uses a {@link String} and optionally
+     * an {@link Icon}.
      */
     public static final PAbstractButtonDefaults DEFAULTS;
     
     /**
-     * Defaults for {@link PJCheckBox} when the constructor uses an {@link Icon}, but does not use
-     * a {@link String}.
+     * Defaults for {@link PJRadioButton} when the constructor uses an {@link Icon}, but does not
+     * use a {@link String}.
      */
     public static final PAbstractButtonDefaults DEFAULTS_FOR_ICON_ONLY;
     
     /**
-     * Defaults for {@link PJCheckBox} when the constructor uses an {@link Action}.
+     * Defaults for {@link PJRadioButton} when the constructor uses an {@link Action}.
      */
     public static final PAbstractButtonDefaults DEFAULTS_FOR_ACTION;
     
     static {
-        final JCheckBox x = new JCheckBox();
+        final JRadioButton x = new JRadioButton();
         DEFAULTS = new PAbstractButtonDefaults(x);
         
-        final JCheckBox y = new JCheckBox(PDummyIconImpl.INSTANCE);
+        final JRadioButton y = new JRadioButton(PDummyIconImpl.INSTANCE);
         DEFAULTS_FOR_ICON_ONLY = new PAbstractButtonDefaults(y);
         
-        final JCheckBox z = new JCheckBox((Action) null);
+        final JRadioButton z = new JRadioButton((Action) null);
         DEFAULTS_FOR_ACTION = new PAbstractButtonDefaults(z);
         
         @SuppressWarnings("unused")
@@ -107,79 +107,50 @@ implements PTextLabel {
     
     private String _originalText;
 
-    /**
-     * @see JCheckBox#JCheckBox()
-     */
-    public PJCheckBox() {
+    public PJRadioButton() {
         super();
-        PJCheckBoxInit(DEFAULTS.text);
+        PJRadioButtonInit(DEFAULTS.text);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(Icon)
-     */
-    public PJCheckBox(Icon icon) {
+    public PJRadioButton(Icon icon) {
         super(icon);
-        PJCheckBoxInit(DEFAULTS_FOR_ICON_ONLY.text);
+        PJRadioButtonInit(DEFAULTS.text);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(String)
-     * @see #setText(String)
-     */
-    public PJCheckBox(String text) {
+    public PJRadioButton(String text) {
         super(text);
-        PJCheckBoxInit(_originalText);
+        PJRadioButtonInit(_originalText);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(Action)
-     * @see #setText(String)
-     */
-    public PJCheckBox(Action a) {
-        super(a);
-        PJCheckBoxInit(_originalText);
+    public PJRadioButton(Action optAction) {
+        super(optAction);
+        PJRadioButtonInit(_originalText);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(Icon, boolean)
-     */
-    public PJCheckBox(Icon icon, boolean selected) {
+    public PJRadioButton(Icon icon, boolean selected) {
         super(icon, selected);
-        PJCheckBoxInit(DEFAULTS_FOR_ICON_ONLY.text);
+        PJRadioButtonInit(DEFAULTS_FOR_ICON_ONLY.text);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(String, boolean)
-     * @see #setText(String)
-     */
-    public PJCheckBox(String text, boolean selected) {
+    public PJRadioButton(String text, boolean selected) {
         super(text, selected);
-        PJCheckBoxInit(_originalText);
+        PJRadioButtonInit(_originalText);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(String, Icon)
-     * @see #setText(String)
-     */
-    public PJCheckBox(String text, Icon icon) {
+    public PJRadioButton(String text, Icon icon) {
         super(text, icon);
-        PJCheckBoxInit(_originalText);
+        PJRadioButtonInit(_originalText);
     }
 
-    /**
-     * @see JCheckBox#JCheckBox(String, Icon, boolean)
-     * @see #setText(String)
-     */
-    public PJCheckBox(String text, Icon icon, boolean selected) {
+    public PJRadioButton(String text, Icon icon, boolean selected) {
         super(text, icon, selected);
-        PJCheckBoxInit(_originalText);
+        PJRadioButtonInit(_originalText);
     }
 
     /**
      * Called by all constructors.
      */
-    protected void PJCheckBoxInit(String optText) {
+    protected void PJRadioButtonInit(String optText) {
         setOriginalText(optText);
     }
     
@@ -191,7 +162,7 @@ implements PTextLabel {
      * Methods {@link #setMnemonic(int)} and {@link #setDisplayedMnemonicIndex(int)} are also
      * called by this method.
      * <hr>
-     * Docs from {@link JCheckBox#setText(String)}:
+     * Docs from {@link JRadioButton#setText(String)}:
      * <p>
      * {@inheritDoc}
      * 

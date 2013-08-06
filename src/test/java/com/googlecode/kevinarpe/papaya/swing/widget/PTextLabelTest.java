@@ -25,8 +25,10 @@ package com.googlecode.kevinarpe.papaya.swing.widget;
  * #L%
  */
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 
 import org.testng.Assert;
@@ -190,6 +192,20 @@ public class PTextLabelTest {
                     PJLabel.DEFAULTS.displayedMnemonicIndex,  // mnemonicIndex
                 },
         };
+    }
+    
+    @SuppressWarnings("serial")
+    public static class SampleAction
+    extends AbstractAction {
+
+        public SampleAction(String textBeforeParse) {
+            putValue(Action.NAME, textBeforeParse);
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // empty
+        }
     }
 
     public static void coreSetText_Pass(

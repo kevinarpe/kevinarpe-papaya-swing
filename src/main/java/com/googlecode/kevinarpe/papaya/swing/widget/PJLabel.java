@@ -87,10 +87,10 @@ implements PTextLabel {
     public static final PJLabelDefaults DEFAULTS_FOR_ICON_ONLY;
     
     static {
-        JLabel x = new JLabel();
+        final JLabel x = new JLabel();
         DEFAULTS = new PJLabelDefaults(x);
         
-        JLabel y = new JLabel(PDummyIconImpl.INSTANCE);
+        final JLabel y = new JLabel(PDummyIconImpl.INSTANCE);
         DEFAULTS_FOR_ICON_ONLY = new PJLabelDefaults(y);
         
         @SuppressWarnings("unused")

@@ -36,7 +36,7 @@ import com.googlecode.kevinarpe.papaya.swing.PHorizontalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.PVerticalAlignment;
 import com.googlecode.kevinarpe.papaya.swing.test.PDummyIconImpl;
 
-public class PJCheckBoxTest {
+public class PJRadioButtonTest {
     
     @DataProvider
     private static final Object[][] _setText_Pass_Data() {
@@ -44,49 +44,49 @@ public class PJCheckBoxTest {
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(<empty>)
+    // PJRadioButton.ctor(<empty>)
     //
 
     @Test
     public void ctorEmpty_Pass() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         checkBasicAttrs(
             x,
-            PJCheckBox.DEFAULTS.text,
-            PJCheckBox.DEFAULTS.text,
-            PJCheckBox.DEFAULTS.mnemonicKeyCode,
-            PJCheckBox.DEFAULTS.displayedMnemonicIndex,
+            PJRadioButton.DEFAULTS.text,
+            PJRadioButton.DEFAULTS.text,
+            PJRadioButton.DEFAULTS.mnemonicKeyCode,
+            PJRadioButton.DEFAULTS.displayedMnemonicIndex,
             (Icon) null,
-            PJCheckBox.DEFAULTS.horizontalAlignment,
-            PJCheckBox.DEFAULTS.verticalAlignment,
-            PJCheckBox.DEFAULTS.horizontalTextPosition,
-            PJCheckBox.DEFAULTS.verticalTextPosition,
-            PJCheckBox.DEFAULTS.isSelected);
+            PJRadioButton.DEFAULTS.horizontalAlignment,
+            PJRadioButton.DEFAULTS.verticalAlignment,
+            PJRadioButton.DEFAULTS.horizontalTextPosition,
+            PJRadioButton.DEFAULTS.verticalTextPosition,
+            PJRadioButton.DEFAULTS.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(Icon)
+    // PJRadioButton.ctor(Icon)
     //
 
     @Test
     public void ctorIcon_Pass() {
-        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton x = new PJRadioButton(PDummyIconImpl.INSTANCE);
         checkBasicAttrs(
             x,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.mnemonicKeyCode,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.text,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.text,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.mnemonicKeyCode,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
             PDummyIconImpl.INSTANCE,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition,
-            PJCheckBox.DEFAULTS_FOR_ICON_ONLY.isSelected);
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition,
+            PJRadioButton.DEFAULTS_FOR_ICON_ONLY.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(String)
+    // PJRadioButton.ctor(String)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -95,7 +95,7 @@ public class PJCheckBoxTest {
             String textAfterParse,
             int mnemonicKeyCode,
             int mnemonicIndex) {
-        PJCheckBox x = new PJCheckBox(textBeforeParse);
+        PJRadioButton x = new PJRadioButton(textBeforeParse);
         checkBasicAttrs(
             x,
             textBeforeParse,
@@ -103,15 +103,15 @@ public class PJCheckBoxTest {
             mnemonicKeyCode,
             mnemonicIndex,
             (Icon) null,
-            PJCheckBox.DEFAULTS.horizontalAlignment,
-            PJCheckBox.DEFAULTS.verticalAlignment,
-            PJCheckBox.DEFAULTS.horizontalTextPosition,
-            PJCheckBox.DEFAULTS.verticalTextPosition,
-            PJCheckBox.DEFAULTS.isSelected);
+            PJRadioButton.DEFAULTS.horizontalAlignment,
+            PJRadioButton.DEFAULTS.verticalAlignment,
+            PJRadioButton.DEFAULTS.horizontalTextPosition,
+            PJRadioButton.DEFAULTS.verticalTextPosition,
+            PJRadioButton.DEFAULTS.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(Action)
+    // PJRadioButton.ctor(Action)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -121,7 +121,7 @@ public class PJCheckBoxTest {
             int mnemonicKeyCode,
             int mnemonicIndex) {
         Action a = new PTextLabelTest.SampleAction(textBeforeParse);
-        PJCheckBox x = new PJCheckBox(a);
+        PJRadioButton x = new PJRadioButton(a);
         checkBasicAttrs(
             x,
             textBeforeParse,
@@ -129,38 +129,38 @@ public class PJCheckBoxTest {
             mnemonicKeyCode,
             mnemonicIndex,
             (Icon) null,
-            PJCheckBox.DEFAULTS_FOR_ACTION.horizontalAlignment,
-            PJCheckBox.DEFAULTS_FOR_ACTION.verticalAlignment,
-            PJCheckBox.DEFAULTS_FOR_ACTION.horizontalTextPosition,
-            PJCheckBox.DEFAULTS_FOR_ACTION.verticalTextPosition,
-            PJCheckBox.DEFAULTS_FOR_ACTION.isSelected);
+            PJRadioButton.DEFAULTS_FOR_ACTION.horizontalAlignment,
+            PJRadioButton.DEFAULTS_FOR_ACTION.verticalAlignment,
+            PJRadioButton.DEFAULTS_FOR_ACTION.horizontalTextPosition,
+            PJRadioButton.DEFAULTS_FOR_ACTION.verticalTextPosition,
+            PJRadioButton.DEFAULTS_FOR_ACTION.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(Icon, boolean)
+    // PJRadioButton.ctor(Icon, boolean)
     //
 
     @Test
     public void ctorIconBoolean_Pass() {
         for (boolean isSelected: new boolean[] { true, false }) {
-            PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE, isSelected);
+            PJRadioButton x = new PJRadioButton(PDummyIconImpl.INSTANCE, isSelected);
             checkBasicAttrs(
                 x,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.text,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.mnemonicKeyCode,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.text,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.text,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.mnemonicKeyCode,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.displayedMnemonicIndex,
                 PDummyIconImpl.INSTANCE,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
-                PJCheckBox.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.horizontalAlignment,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.verticalAlignment,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.horizontalTextPosition,
+                PJRadioButton.DEFAULTS_FOR_ICON_ONLY.verticalTextPosition,
                 isSelected);
         }
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(String, boolean)
+    // PJRadioButton.ctor(String, boolean)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -170,7 +170,7 @@ public class PJCheckBoxTest {
             int mnemonicKeyCode,
             int mnemonicIndex) {
         for (boolean isSelected: new boolean[] { true, false }) {
-            PJCheckBox x = new PJCheckBox(textBeforeParse, isSelected);
+            PJRadioButton x = new PJRadioButton(textBeforeParse, isSelected);
             checkBasicAttrs(
                 x,
                 textBeforeParse,
@@ -178,16 +178,16 @@ public class PJCheckBoxTest {
                 mnemonicKeyCode,
                 mnemonicIndex,
                 (Icon) null,
-                PJCheckBox.DEFAULTS.horizontalAlignment,
-                PJCheckBox.DEFAULTS.verticalAlignment,
-                PJCheckBox.DEFAULTS.horizontalTextPosition,
-                PJCheckBox.DEFAULTS.verticalTextPosition,
+                PJRadioButton.DEFAULTS.horizontalAlignment,
+                PJRadioButton.DEFAULTS.verticalAlignment,
+                PJRadioButton.DEFAULTS.horizontalTextPosition,
+                PJRadioButton.DEFAULTS.verticalTextPosition,
                 isSelected);
         }
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(String, Icon)
+    // PJRadioButton.ctor(String, Icon)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -196,7 +196,7 @@ public class PJCheckBoxTest {
             String textAfterParse,
             int mnemonicKeyCode,
             int mnemonicIndex) {
-        PJCheckBox x = new PJCheckBox(textBeforeParse, PDummyIconImpl.INSTANCE);
+        PJRadioButton x = new PJRadioButton(textBeforeParse, PDummyIconImpl.INSTANCE);
         checkBasicAttrs(
             x,
             textBeforeParse,
@@ -204,15 +204,15 @@ public class PJCheckBoxTest {
             mnemonicKeyCode,
             mnemonicIndex,
             PDummyIconImpl.INSTANCE,
-            PJCheckBox.DEFAULTS.horizontalAlignment,
-            PJCheckBox.DEFAULTS.verticalAlignment,
-            PJCheckBox.DEFAULTS.horizontalTextPosition,
-            PJCheckBox.DEFAULTS.verticalTextPosition,
-            PJCheckBox.DEFAULTS.isSelected);
+            PJRadioButton.DEFAULTS.horizontalAlignment,
+            PJRadioButton.DEFAULTS.verticalAlignment,
+            PJRadioButton.DEFAULTS.horizontalTextPosition,
+            PJRadioButton.DEFAULTS.verticalTextPosition,
+            PJRadioButton.DEFAULTS.isSelected);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.ctor(String, Icon, boolean)
+    // PJRadioButton.ctor(String, Icon, boolean)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -222,7 +222,7 @@ public class PJCheckBoxTest {
             int mnemonicKeyCode,
             int mnemonicIndex) {
         for (boolean isSelected: new boolean[] { true, false }) {
-            PJCheckBox x = new PJCheckBox(textBeforeParse, PDummyIconImpl.INSTANCE, isSelected);
+            PJRadioButton x = new PJRadioButton(textBeforeParse, PDummyIconImpl.INSTANCE, isSelected);
             checkBasicAttrs(
                 x,
                 textBeforeParse,
@@ -230,10 +230,10 @@ public class PJCheckBoxTest {
                 mnemonicKeyCode,
                 mnemonicIndex,
                 PDummyIconImpl.INSTANCE,
-                PJCheckBox.DEFAULTS.horizontalAlignment,
-                PJCheckBox.DEFAULTS.verticalAlignment,
-                PJCheckBox.DEFAULTS.horizontalTextPosition,
-                PJCheckBox.DEFAULTS.verticalTextPosition,
+                PJRadioButton.DEFAULTS.horizontalAlignment,
+                PJRadioButton.DEFAULTS.verticalAlignment,
+                PJRadioButton.DEFAULTS.horizontalTextPosition,
+                PJRadioButton.DEFAULTS.verticalTextPosition,
                 isSelected);
         }
     }
@@ -265,7 +265,7 @@ public class PJCheckBoxTest {
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.setText(String)
+    // PJRadioButton.setText(String)
     //
     
     @Test(dataProvider = "_setText_Pass_Data")
@@ -274,26 +274,26 @@ public class PJCheckBoxTest {
             String textAfterParse,
             int mnemonicKeyCode,
             int mnemonicIndex) {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         x.setText(textBeforeParse);
         PTextLabelTest.coreSetText_Pass(
             x, textBeforeParse, textAfterParse, mnemonicKeyCode, mnemonicIndex);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.setHorizontalAlignment(PHorizontalAlignment)/.getHorizontalAlignmentAsEnum()
+    // PJRadioButton.setHorizontalAlignment(PHorizontalAlignment)/.getHorizontalAlignmentAsEnum()
     //
     
     @Test
     public void setHorizontalAlignment_Pass() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         _setHorizontalAlignment_Pass(x);
         
-        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton y = new PJRadioButton(PDummyIconImpl.INSTANCE);
         _setHorizontalAlignment_Pass(y);
     }
     
-    public void _setHorizontalAlignment_Pass(PJCheckBox x) {
+    public void _setHorizontalAlignment_Pass(PJRadioButton x) {
         for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
             x.setHorizontalAlignment(halign);
             Assert.assertEquals(x.getHorizontalAlignment(), halign.value);
@@ -303,30 +303,30 @@ public class PJCheckBoxTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalAlignment_FailWithNull() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         x.setHorizontalAlignment((PHorizontalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalAlignment_FailWithNull2() {
-        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton x = new PJRadioButton(PDummyIconImpl.INSTANCE);
         x.setHorizontalAlignment((PHorizontalAlignment) null);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.setVerticalAlignment(PVerticalAlignment)/.getVerticalAlignmentAsEnum()
+    // PJRadioButton.setVerticalAlignment(PVerticalAlignment)/.getVerticalAlignmentAsEnum()
     //
     
     @Test
     public void setVerticalAlignment_Pass() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         _setVerticalAlignment_Pass(x);
         
-        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton y = new PJRadioButton(PDummyIconImpl.INSTANCE);
         _setVerticalAlignment_Pass(y);
     }
     
-    public void _setVerticalAlignment_Pass(PJCheckBox x) {
+    public void _setVerticalAlignment_Pass(PJRadioButton x) {
         for (PVerticalAlignment halign: PVerticalAlignment.values()) {
             x.setVerticalAlignment(halign);
             Assert.assertEquals(x.getVerticalAlignment(), halign.value);
@@ -336,30 +336,30 @@ public class PJCheckBoxTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalAlignment_FailWithNull() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         x.setVerticalAlignment((PVerticalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalAlignment_FailWithNull2() {
-        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton x = new PJRadioButton(PDummyIconImpl.INSTANCE);
         x.setVerticalAlignment((PVerticalAlignment) null);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.setHorizontalTextPosition(PHorizontalAlignment)/.getHorizontalTextPositionAsEnum()
+    // PJRadioButton.setHorizontalTextPosition(PHorizontalAlignment)/.getHorizontalTextPositionAsEnum()
     //
     
     @Test
     public void setHorizontalTextPosition_Pass() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         _setHorizontalTextPosition_Pass(x);
         
-        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton y = new PJRadioButton(PDummyIconImpl.INSTANCE);
         _setHorizontalTextPosition_Pass(y);
     }
     
-    public void _setHorizontalTextPosition_Pass(PJCheckBox x) {
+    public void _setHorizontalTextPosition_Pass(PJRadioButton x) {
         for (PHorizontalAlignment halign: PHorizontalAlignment.values()) {
             x.setHorizontalTextPosition(halign);
             Assert.assertEquals(x.getHorizontalTextPosition(), halign.value);
@@ -369,30 +369,30 @@ public class PJCheckBoxTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalTextPosition_FailWithNull() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         x.setHorizontalTextPosition((PHorizontalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setHorizontalTextPosition_FailWithNull2() {
-        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton x = new PJRadioButton(PDummyIconImpl.INSTANCE);
         x.setHorizontalTextPosition((PHorizontalAlignment) null);
     }
     
     ///////////////////////////////////////////////////////////////////////////
-    // PJCheckBox.setVerticalTextPosition(PVerticalAlignment)/.getVerticalTextPositionAsEnum()
+    // PJRadioButton.setVerticalTextPosition(PVerticalAlignment)/.getVerticalTextPositionAsEnum()
     //
     
     @Test
     public void setVerticalTextPosition_Pass() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         _setVerticalTextPosition_Pass(x);
         
-        PJCheckBox y = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton y = new PJRadioButton(PDummyIconImpl.INSTANCE);
         _setVerticalTextPosition_Pass(y);
     }
     
-    public void _setVerticalTextPosition_Pass(PJCheckBox x) {
+    public void _setVerticalTextPosition_Pass(PJRadioButton x) {
         for (PVerticalAlignment halign: PVerticalAlignment.values()) {
             x.setVerticalTextPosition(halign);
             Assert.assertEquals(x.getVerticalTextPosition(), halign.value);
@@ -402,13 +402,13 @@ public class PJCheckBoxTest {
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalTextPosition_FailWithNull() {
-        PJCheckBox x = new PJCheckBox();
+        PJRadioButton x = new PJRadioButton();
         x.setVerticalTextPosition((PVerticalAlignment) null);
     }
     
     @Test(expectedExceptions = NullPointerException.class)
     public void setVerticalTextPosition_FailWithNull2() {
-        PJCheckBox x = new PJCheckBox(PDummyIconImpl.INSTANCE);
+        PJRadioButton x = new PJRadioButton(PDummyIconImpl.INSTANCE);
         x.setVerticalTextPosition((PVerticalAlignment) null);
     }
 }
