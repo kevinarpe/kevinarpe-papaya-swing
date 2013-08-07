@@ -98,6 +98,15 @@ import com.googlecode.kevinarpe.papaya.swing.theme.PThemeImageIcon;
 public class PImageIconAsync
 extends ImageIcon {
     
+    // setIcon(Icon): tab is (1) focused or (2) not
+    // setRolloverIcon(Icon): (3)
+    // setPressedIcon(Icon): (4)
+    
+    // (1) Original image
+    // (2) Light gray
+    // (3) 10% Lighter
+    // (4) 20% Darker
+    
     /**
      * This is a convenience constructor to call {@link ImageIcon#ImageIcon()}.
      */
