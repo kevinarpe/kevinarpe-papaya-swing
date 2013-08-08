@@ -30,6 +30,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import javax.accessibility.AccessibleContext;
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -44,6 +46,7 @@ import javax.swing.JFrame;
 import com.google.common.io.ByteStreams;
 import com.googlecode.kevinarpe.papaya.StringUtils;
 import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 import com.googlecode.kevinarpe.papaya.argument.PathArgs;
 import com.googlecode.kevinarpe.papaya.exception.ClassResourceNotFoundException;
@@ -103,9 +106,121 @@ extends ImageIcon {
     // setPressedIcon(Icon): (4)
     
     // (1) Original image
-    // (2) Light gray
+    // (2) to gray, then 20% lighter
     // (3) 10% Lighter
     // (4) 20% Darker
+    
+    /**
+     * Creates a new icon in grayscale with scaled brightness.  This method can be uses to generate
+     * an icon for {@link AbstractButton#setDisabledIcon(Icon)}.
+     * <p>
+     * Example: {@code createGrayscaleIcon(1.20f)}
+     * <br>... creates brighter grayscale icon with description:
+     * {@code getDescription() + " [grayscale:120% brightness]"}
+     * 
+     * @param brightnessScaleFactor
+     * <ul>
+     *   <li>see {@link PImageUtils#scaleBrightness(BufferedImage, float)}</li>
+     *   <li>to keep brightness unchanged, use {@code 1.0f}</li>
+     * </ul>
+     * @param optDescriptionSuffix
+     *        optional suffix for {@link #getDescription()}, e.g., {@code "rollover"} or
+     *        {@code "pressed"}
+     * 
+     * @return new grayscale icon with modified brightness
+     * 
+     * @see #createScaledBrightnessIcon(float, String)
+     */
+    @NotFullyTested
+    public PImageIconAsync createGrayscaleIcon(float brightnessScaleFactor) {
+        final Image image = this.getImage();
+        final BufferedImage image2 =
+            PImageUtils.imageToBufferedImage(image, PBufferedImageType.TYPE_INT_ARGB);
+        BufferedImage image3 = PImageUtils.toGrayscale(image2);
+        if (1.0f != brightnessScaleFactor) {
+            image3 = PImageUtils.scaleBrightness(image3, brightnessScaleFactor);
+        }
+        
+        String d = createDescriptionWithSuffix("grayscale", brightnessScaleFactor);
+        PImageIconAsync x = new PImageIconAsync(image3, d);
+        return x;
+    }
+    
+    /**
+     * Creates a new description from {@link #getDescription()}.
+     * 
+     * @param optSuffix
+     *        optional suffix, e.g., {@code "rollover"} or {@code "pressed"}
+     * @param brightnessScaleFactor
+     * <ul>
+     *   <li>to be converted to % brightness, e.g., {@code "80% brightness"}</li>
+     *   <li>ignored if equals {@code 1.0f}</li>
+     * </ul>
+     * 
+     * @return new description
+     * 
+     * @see #createGrayscaleIcon(float)
+     * @see #createScaledBrightnessIcon(float, String)
+     */
+    protected String createDescriptionWithSuffix(String optSuffix, float brightnessScaleFactor) {
+        if (null == optSuffix) {
+            optSuffix = "";
+        }
+        else {
+            optSuffix += ":";
+        }
+        
+        String brightness = "";
+        if (1.0f != brightnessScaleFactor) {
+            brightness = String.format("%d%% brightness", (int) (100.0f * brightnessScaleFactor));
+        }
+        
+        String d = getDescription();
+        if (null == d) {
+            d = "";
+        }
+        else {
+            d += " ";
+        }
+        d += String.format("[%s%s]", optSuffix, brightness);
+        return d;
+    }
+    
+    /**
+     * Creates a new icon with scaled brightness.  This method can be used to generate icons for
+     * {@link AbstractButton#setRolloverIcon(Icon)} and
+     * {@link AbstractButton#setPressedIcon(Icon)}.
+     * <p>
+     * Example: {@code createScaledBrightnessIcon(1.10f, "rollover")}
+     * <br>... creates brighter icon with description:
+     * {@code getDescription() + " [rollover:110% brightness]"}
+     * <p>
+     * Example: {@code createScaledBrightnessIcon(0.80f, "pressed")}
+     * <br>... creates duller icon with description:
+     * {@code getDescription() + " [rollover:80% brightness]"}
+     * 
+     * @param brightnessScaleFactor
+     *        see {@link PImageUtils#scaleBrightness(BufferedImage, float)}
+     * @param optDescriptionSuffix
+     *        optional suffix for {@link #getDescription()}, e.g., {@code "rollover"} or
+     *        {@code "pressed"}
+     * 
+     * @return new icon with modified brightness
+     * 
+     * @see #createGrayscaleIcon(float)
+     */
+    @NotFullyTested
+    public PImageIconAsync createScaledBrightnessIcon(
+            float brightnessScaleFactor, String optDescriptionSuffix) {
+        final Image image = this.getImage();
+        final BufferedImage image2 =
+            PImageUtils.imageToBufferedImage(image, PBufferedImageType.TYPE_INT_ARGB);
+        final BufferedImage image3 = PImageUtils.scaleBrightness(image2, brightnessScaleFactor);
+        
+        String d = createDescriptionWithSuffix(optDescriptionSuffix, brightnessScaleFactor);
+        PImageIconAsync x = new PImageIconAsync(image3, d);
+        return x;
+    }
     
     /**
      * This is a convenience constructor to call {@link ImageIcon#ImageIcon()}.

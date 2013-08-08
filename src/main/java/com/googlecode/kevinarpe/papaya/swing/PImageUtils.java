@@ -2,10 +2,15 @@ package com.googlecode.kevinarpe.papaya.swing;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.ImageObserver;
+import java.awt.image.RescaleOp;
 
 import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
+import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
 import com.googlecode.kevinarpe.papaya.argument.ObjectArgs;
 
 /**
@@ -77,5 +82,110 @@ public final class PImageUtils {
             g.dispose();
         }
         return newImage;
+    }
+    
+    /**
+     * This is a convenience method to call
+     * {@link #scaleBrightness(BufferedImage, BufferedImage, float)} where {@code optDestImage} is
+     * {@code null}.
+     */
+    @NotFullyTested
+    public static BufferedImage scaleBrightness(BufferedImage srcImage, float scaleFactor) {
+        final BufferedImage optDestImage = null;
+        BufferedImage x = scaleBrightness(srcImage, optDestImage, scaleFactor);
+        return x;
+    }
+    
+    /**
+     * Copies source image and changes its brightness.  Calls
+     * {@link RescaleOp#filter(BufferedImage, BufferedImage)} to scale all color bands (possibly
+     * RGB) equally.
+     * 
+     * @param srcImage
+     *        source image.  Must not be {@code null}
+     * @param optDestImage
+     * <ul>
+     *   <li>optional destination image.  May be {@code null}</li>
+     *   <li>if {@code null}, a new {@code BufferedImage} is created by this method</li>
+     * </ul>
+     * @param scaleFactor
+     * <ul>
+     *   <li>each color band (possibly RGB) is multiplied by this value</li>
+     *   <li>value 1.0 will copy the image exactly</li>
+     *   <li>for example, to <i>reduce</i> brighness by 15%, use +0.85f</li>
+     *   <li>for example, to <i>increase</i> brighness by 15%, use +1.15f</li>
+     * </ul>
+     * 
+     * @return
+     * <ul>
+     *   <li>if {@code optDestImage} is {@code null}, new image with changed brightness</li>
+     *   <li>else, reference to {@code optDestImage}</li>
+     * </ul>
+     * 
+     * @throws NullPointerException
+     *         if {@code srcImage} is {@code null}
+     * 
+     * @see RescaleOp
+     */
+    @NotFullyTested
+    public static BufferedImage scaleBrightness(
+            BufferedImage srcImage, BufferedImage optDestImage, float scaleFactor) {
+        ObjectArgs.checkNotNull(srcImage, "srcImage");
+
+        // TODO: What if optDestImage == srcImage?
+        // Ref: http://javaingrab.blogspot.hk/2012/10/change-brightness-of-image-using.html
+        final float offset = 0.0f;
+        RescaleOp op = new RescaleOp(scaleFactor, offset, (RenderingHints) null);
+        BufferedImage x = op.filter(srcImage, optDestImage);
+        return x;
+    }
+    
+    /**
+     * This is a convenience method to call
+     * {@link #toGrayscale(BufferedImage, BufferedImage)} where {@code optDestImage} is
+     * {@code null}.
+     */
+    @NotFullyTested
+    public static BufferedImage toGrayscale(BufferedImage srcImage) {
+        final BufferedImage optDestImage = null;
+        BufferedImage x = toGrayscale(srcImage, optDestImage);
+        return x;
+    }
+    
+    /**
+     * Copies source image and converts to grayscale.  Calls
+     * {@link ColorConvertOp#filter(BufferedImage, BufferedImage)} to convert to
+     * {@link ColorSpace#CS_GRAY}.
+     * 
+     * @param srcImage
+     *        source image.  Must not be {@code null}
+     * @param optDestImage
+     * <ul>
+     *   <li>optional destination image.  May be {@code null}</li>
+     *   <li>if {@code null}, a new {@code BufferedImage} is created by this method</li>
+     * </ul>
+     * 
+     * @return
+     * <ul>
+     *   <li>if {@code optDestImage} is {@code null}, new image in grayscale</li>
+     *   <li>else, reference to {@code optDestImage}</li>
+     * </ul>
+     * 
+     * @throws NullPointerException
+     *         if {@code srcImage} is {@code null}
+     * 
+     * @see ColorSpace#CS_GRAY
+     * @see ColorConvertOp
+     */
+    @NotFullyTested
+    public static BufferedImage toGrayscale(BufferedImage srcImage, BufferedImage optDestImage) {
+        ObjectArgs.checkNotNull(srcImage, "srcImage");
+        
+        // TODO: What if optDestImage == srcImage?
+        // TODO: Create enum PColorSpace?
+        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+        ColorConvertOp op = new ColorConvertOp(cs, (RenderingHints) null);
+        BufferedImage x = op.filter(srcImage, optDestImage);
+        return x;
     }
 }
