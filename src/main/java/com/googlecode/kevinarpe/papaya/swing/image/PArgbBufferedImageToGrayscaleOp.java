@@ -1,5 +1,30 @@
 package com.googlecode.kevinarpe.papaya.swing.image;
 
+/*
+ * #%L
+ * This file is part of Papaya Swing.
+ * %%
+ * Copyright (C) 2013 Kevin Connor ARPE (kevinarpe@gmail.com)
+ * %%
+ * Papaya Swing is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * GPL Classpath Exception:
+ * This project is subject to the "Classpath" exception as provided in
+ * the LICENSE file that accompanied this code.
+ * 
+ * Papaya Swing is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Papaya Swing.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
+
 import java.awt.image.ColorModel;
 
 import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
@@ -9,9 +34,9 @@ import com.googlecode.kevinarpe.papaya.annotation.NotFullyTested;
  * transformation.  The formula used is part of the HDTV / ATSC standard.
  * <p>
  * <ul>
- *   <li>Ref(i): <a href="https://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale"
+ *   <li>Ref(i): <a href="https://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale">
  *   https://en.wikipedia.org/wiki/Grayscale#Converting_color_to_grayscale</a></li>
- *   <li>Ref(ii): <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601"
+ *   <li>Ref(ii): <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
  *   http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601</a></li>
  * </ul>
  * 
