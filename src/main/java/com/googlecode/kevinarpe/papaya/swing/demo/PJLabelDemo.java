@@ -26,15 +26,15 @@ package com.googlecode.kevinarpe.papaya.swing.demo;
  */
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.io.File;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.googlecode.kevinarpe.papaya.exception.PathException;
+import com.googlecode.kevinarpe.papaya.swing.PImageIconAsync;
 import com.googlecode.kevinarpe.papaya.swing.PImmutableDimension;
-import com.googlecode.kevinarpe.papaya.swing.PSwingUtils;
 import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconLoaderFixedDimensionFromPngFile;
 import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconName;
 import com.googlecode.kevinarpe.papaya.swing.theme.PThemeImageIcon;
@@ -59,9 +59,9 @@ extends PAbstractSwingDemo {
         childPanel.setLayout(childLayout);
         parentPanel.add(childPanel, BorderLayout.PAGE_START);
         
-        JButton filler = new JButton("Filler -- Initial Focus");
-        parentPanel.add(filler, BorderLayout.CENTER);
-        PSwingUtils.requestFocusAfterNextShow(filler);
+//        JButton filler = new JButton("Filler -- Initial Focus");
+//        parentPanel.add(filler, BorderLayout.CENTER);
+//        PSwingUtils.requestFocusAfterNextShow(filler);
         
         PJLabel label = new PJLabel("Sample\n&&\n&Example:");
         try {
@@ -96,6 +96,41 @@ extends PAbstractSwingDemo {
         JTextField textField = new JTextField("Some sample text");
         childPanel.add(textField, BorderLayout.CENTER);
         label.setLabelFor(textField);
+        
+        JPanel iconPanel = new JPanel();
+        FlowLayout iconLayout = new FlowLayout(FlowLayout.LEADING, 10, 10);
+        iconPanel.setLayout(iconLayout);
+        parentPanel.add(iconPanel, BorderLayout.CENTER);
+        
+        try {
+            PThemeIconLoaderFixedDimensionFromPngFile iconLoader =
+                new PThemeIconLoaderFixedDimensionFromPngFile(
+                    PImmutableDimension.getSharedFromWidthAndHeight(32, 32),
+                    new File("/home/kca/saveme/oxygen-icons-4.10.5"));
+            PThemeImageIcon icon = iconLoader.getIcon(PThemeIconName.APPLICATION_EXIT);
+            icon.waitForLoad();
+            iconPanel.add(new PJLabel(icon));
+            for (float scaleFactor = 1.5f; scaleFactor >= 1.0f; scaleFactor -= 0.1f) {
+                PImageIconAsync grayIcon = icon.createGrayscaleIcon(scaleFactor);
+                iconPanel.add(new PJLabel(grayIcon));
+            }
+//            for (float scaleFactor = 1.5f; scaleFactor >= 1.0f; scaleFactor -= 0.1f) {
+//                PImageIconAsync grayIcon = icon.createGrayscaleIcon2(scaleFactor);
+//                iconPanel.add(new PJLabel(grayIcon));
+//            }
+            iconPanel.add(new PJLabel(icon));
+            for (float scaleFactor = 1.5f; scaleFactor >= 1.0f; scaleFactor -= 0.1f) {
+                PImageIconAsync grayIcon = icon.createScaledBrightnessIcon(scaleFactor, "natta");
+                iconPanel.add(new PJLabel(grayIcon));
+            }
+            iconPanel.add(new PJLabel(icon));
+        }
+        catch (PathException e) {
+            e.printStackTrace();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return parentPanel;
     }

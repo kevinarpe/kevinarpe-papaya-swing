@@ -1,9 +1,8 @@
 package com.googlecode.kevinarpe.papaya.swing;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.util.Map;
-
-import javax.swing.SwingConstants;
 
 import com.google.common.collect.ImmutableMap;
 import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
@@ -13,9 +12,11 @@ import com.googlecode.kevinarpe.papaya.annotation.FullyTested;
  * {@code BufferedImage}, this enum restricts the range of permissible values.  Used judiciously,
  * it may help to reduce runtime errors and increase source code readability.
  * <p>
+ * The most common type in AWT and Swing is {@link #TYPE_INT_ARGB}.
+ * <p>
  * Example methods:
  * <ul>
- *   <li>{@link PImageUtils#imageToBufferedImage(java.awt.Image, PBufferedImageType)}</li>
+ *   <li>{@link PImageUtils#convertToBufferedImage(java.awt.Image, PBufferedImageType)}</li>
  * </ul>
  * 
  * @author Kevin Connor ARPE (kevinarpe@gmail.com)
@@ -61,6 +62,9 @@ public enum PBufferedImageType {
     TYPE_CUSTOM(BufferedImage.TYPE_CUSTOM),
     
     /**
+     * This is the most common type use in AWT and Swing.  The underlying {@link ColorModel} is
+     * {@link ColorModel#getRGBdefault()}.
+     * 
      * @see BufferedImage#TYPE_INT_ARGB
      */
     TYPE_INT_ARGB(BufferedImage.TYPE_INT_ARGB),
@@ -96,9 +100,9 @@ public enum PBufferedImageType {
     TYPE_USHORT_GRAY(BufferedImage.TYPE_USHORT_GRAY),
     ;
     
-    public static void main(String[] argArr) {
-        System.out.println(PBufferedImageType.TYPE_INT_ARGB);
-    }
+//    public static void main(String[] argArr) {
+//        System.out.println(PBufferedImageType.TYPE_INT_ARGB);
+//    }
   
     private static final Map<Integer, PBufferedImageType> _INT_VALUE_TO_ENUM_VALUE_MAP;
   
@@ -111,11 +115,12 @@ public enum PBufferedImageType {
     }
   
     /**
-     * Converts an integer constant from {@link SwingConstants}, e.g., {@link SwingConstants#LEFT},
-     * to the corresponding enum value ref.
+     * Converts an integer constant from {@link BufferedImage}, e.g.,
+     * {@link BufferedImage#TYPE_INT_ARGB}, to the corresponding enum value ref.
      * 
      * @param value
-     *        integer constant from {@link SwingConstants}, e.g., {@link SwingConstants#LEFT}
+     *        integer constant from {@link BufferedImage}, e.g.,
+     *        {@link BufferedImage#TYPE_INT_ARGB}
      * 
      * @return enum value ref where {@link #value} equals the parameter, {@code value}
      * 

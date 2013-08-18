@@ -52,6 +52,7 @@ import com.googlecode.kevinarpe.papaya.argument.PathArgs;
 import com.googlecode.kevinarpe.papaya.exception.ClassResourceNotFoundException;
 import com.googlecode.kevinarpe.papaya.exception.PathException;
 import com.googlecode.kevinarpe.papaya.exception.PathException.PathExceptionReason;
+import com.googlecode.kevinarpe.papaya.swing.image.PArgbBufferedImageToGrayscaleOp;
 import com.googlecode.kevinarpe.papaya.swing.theme.PThemeIconLoaderAbstract;
 import com.googlecode.kevinarpe.papaya.swing.theme.PThemeImageIcon;
 
@@ -110,9 +111,14 @@ extends ImageIcon {
     // (3) 10% Lighter
     // (4) 20% Darker
     
+    private static PArgbBufferedImageToGrayscaleOp _grayscaleImageOp;
+    
     /**
      * Creates a new icon in grayscale with scaled brightness.  This method can be uses to generate
      * an icon for {@link AbstractButton#setDisabledIcon(Icon)}.
+     * <p>
+     * This new version uses a highly sophisticated algorithm to convert colors images to
+     * grayscale using {@link PArgbBufferedImageToGrayscaleOp}.
      * <p>
      * Example: {@code createGrayscaleIcon(1.20f)}
      * <br>... creates brighter grayscale icon with description:
@@ -120,7 +126,7 @@ extends ImageIcon {
      * 
      * @param brightnessScaleFactor
      * <ul>
-     *   <li>see {@link PImageUtils#scaleBrightness(BufferedImage, float)}</li>
+     *   <li>see {@link PImageUtils#createCompatibleImageWithScaledBrightness(BufferedImage, float)}</li>
      *   <li>to keep brightness unchanged, use {@code 1.0f}</li>
      * </ul>
      * @param optDescriptionSuffix
@@ -130,21 +136,44 @@ extends ImageIcon {
      * @return new grayscale icon with modified brightness
      * 
      * @see #createScaledBrightnessIcon(float, String)
+     * @see PArgbBufferedImageToGrayscaleOp
      */
     @NotFullyTested
     public PImageIconAsync createGrayscaleIcon(float brightnessScaleFactor) {
+        // TODO: Do we need to call Image.flush() here?
         final Image image = this.getImage();
-        final BufferedImage image2 =
-            PImageUtils.imageToBufferedImage(image, PBufferedImageType.TYPE_INT_ARGB);
-        BufferedImage image3 = PImageUtils.toGrayscale(image2);
+        final BufferedImage image2 = PImageUtils.convertImageToCompatible(image);
         if (1.0f != brightnessScaleFactor) {
-            image3 = PImageUtils.scaleBrightness(image3, brightnessScaleFactor);
+            PImageUtils.createCompatibleImageWithScaledBrightness(
+                image2, image2, brightnessScaleFactor);
         }
+        //PImageUtils.createCompatibleGrayscaleImage(image2, image2);
+        if (null == _grayscaleImageOp) {
+            _grayscaleImageOp = new PArgbBufferedImageToGrayscaleOp();
+        }
+        _grayscaleImageOp.filter(image2, image2);
         
         String d = createDescriptionWithSuffix("grayscale", brightnessScaleFactor);
-        PImageIconAsync x = new PImageIconAsync(image3, d);
+        PImageIconAsync x = new PImageIconAsync(image2, d);
         return x;
     }
+    
+//    @NotFullyTested
+//    public PImageIconAsync createGrayscaleIcon2(float brightnessScaleFactor) {
+//        // TODO: Do we need to call Image.flush() here?
+//        final Image image = this.getImage();
+//        final BufferedImage image2 = PImageUtils.convertImageToCompatible(image);
+//        if (1.0f != brightnessScaleFactor) {
+//            PImageUtils.createCompatibleImageWithScaledBrightness(image2, image2, brightnessScaleFactor);
+//        }
+//        PArgbBufferedImageToGrayscaleOp op = new PArgbBufferedImageToGrayscaleOp();
+//        op.filter(image2, image2);
+////        PImageUtils.createCompatibleGrayscaleImage(image2, image2);
+//        
+//        String d = createDescriptionWithSuffix("grayscale", brightnessScaleFactor);
+//        PImageIconAsync x = new PImageIconAsync(image2, d);
+//        return x;
+//    }
     
     /**
      * Creates a new description from {@link #getDescription()}.
@@ -200,7 +229,7 @@ extends ImageIcon {
      * {@code getDescription() + " [rollover:80% brightness]"}
      * 
      * @param brightnessScaleFactor
-     *        see {@link PImageUtils#scaleBrightness(BufferedImage, float)}
+     *        see {@link PImageUtils#createCompatibleImageWithScaledBrightness(BufferedImage, float)}
      * @param optDescriptionSuffix
      *        optional suffix for {@link #getDescription()}, e.g., {@code "rollover"} or
      *        {@code "pressed"}
@@ -213,12 +242,13 @@ extends ImageIcon {
     public PImageIconAsync createScaledBrightnessIcon(
             float brightnessScaleFactor, String optDescriptionSuffix) {
         final Image image = this.getImage();
-        final BufferedImage image2 =
-            PImageUtils.imageToBufferedImage(image, PBufferedImageType.TYPE_INT_ARGB);
-        final BufferedImage image3 = PImageUtils.scaleBrightness(image2, brightnessScaleFactor);
+        final BufferedImage image2 = PImageUtils.convertImageToCompatible(image);
+        // In-place operation
+        PImageUtils.createCompatibleImageWithScaledBrightness(
+            image2, image2, brightnessScaleFactor);
         
         String d = createDescriptionWithSuffix(optDescriptionSuffix, brightnessScaleFactor);
-        PImageIconAsync x = new PImageIconAsync(image3, d);
+        PImageIconAsync x = new PImageIconAsync(image2, d);
         return x;
     }
     
@@ -770,7 +800,7 @@ extends ImageIcon {
         setImageLoadStatus(status);
         
         if (status.isDone) {
-            Image image = getImage();
+            Image image = getImageCore();
             mt.removeImage(image, _mediaTrackerId);
             
             ImageObserver io = getImageObserver();
@@ -808,6 +838,17 @@ extends ImageIcon {
     public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
         checkImageLoadDone();
         super.paintIcon(c, g, x, y);
+    }
+    
+    @Override
+    public Image getImage() {
+        checkImageLoadDone();
+        Image x = getImageCore();
+        return x;
+    }
+    
+    protected Image getImageCore() {
+        return super.getImage();
     }
     
     /**
@@ -935,7 +976,7 @@ extends ImageIcon {
      */
     @Override
     public int getIconWidth() {
-        final int width = getIconWidthCore();
+        int width = getIconWidthCore();
         // Small optimization to reduce number of calls to checkImageLoadDone().  During layout,
         // this method is called many times!
         if (DEFAULT_WIDTH == width) {
@@ -944,6 +985,7 @@ extends ImageIcon {
                 return optDim.width;
             }
             checkImageLoadDone();
+            width = getIconWidthCore();
         }
         return width;
     }
@@ -980,7 +1022,7 @@ extends ImageIcon {
      */
     @Override
     public int getIconHeight() {
-        final int height = getIconHeightCore();
+        int height = getIconHeightCore();
         // Small optimization to reduce number of calls to checkImageLoadDone().  During layout,
         // this method is called many times!
         if (DEFAULT_HEIGHT == height) {
@@ -989,6 +1031,7 @@ extends ImageIcon {
                 return optDim.height;
             }
             checkImageLoadDone();
+            height = getIconHeightCore();
         }
         return height;
     }
@@ -1029,7 +1072,7 @@ extends ImageIcon {
     protected void setIconHeight(int height) {
         _height = height;
     }
-    
+
     private AccessibleContext _accessibleContext;
     
     /**

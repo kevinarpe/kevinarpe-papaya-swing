@@ -38,7 +38,7 @@ import javax.swing.UIManager;
 
 import com.googlecode.kevinarpe.papaya.swing.widget.PJSplitPaneProportional;
 
-public class SwingSample {
+public class PSwingSample {
 
     public static final void main(String[] argArr)
     throws Exception {
