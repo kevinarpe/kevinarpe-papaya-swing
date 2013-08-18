@@ -50,25 +50,25 @@ public class PArgbBufferedImageToGrayscaleOp
 extends PAbstractArgbBufferedImageOp {
     
     /**
-     * Luma coefficient from HDTV standard for red component to grayscale conversion.
+     * Luma coefficient from HDTV standard for red component to grayscale conversion: {@code 0.2126f}
      * <p>
-     * <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
+     * Ref: <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
      * http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601</a>
      */
     public final float BT_709_LUMA_COEFFICIENT_RED = 0.2126f;
 
     /**
-     * Luma coefficient from HDTV standard for green component to grayscale conversion.
+     * Luma coefficient from HDTV standard for green component to grayscale conversion: {@code 0.7152f}
      * <p>
-     * <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
+     * Ref: <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
      * http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601</a>
      */
     public final float BT_709_LUMA_COEFFICIENT_GREEN = 0.7152f;
     
     /**
-     * Luma coefficient from HDTV standard for blue component to grayscale conversion.
+     * Luma coefficient from HDTV standard for blue component to grayscale conversion: {@code 0.0722f}
      * <p>
-     * <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
+     * Ref: <a href="http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601">
      * http://en.wikipedia.org/wiki/YUV#BT.709_and_BT.601</a>
      */
     public final float BT_709_LUMA_COEFFICIENT_BLUE = 0.0722f;
